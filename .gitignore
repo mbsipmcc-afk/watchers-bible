@@ -4,3 +4,6 @@ dev-dist
 .vercel
 *.tsbuildinfo
 .DS_Store
+
+.vercel
+.env*

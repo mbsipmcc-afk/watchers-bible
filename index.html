@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no"
+    />
+    <meta name="theme-color" content="#f7f7f5" id="themeColorMeta" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Watchers" />
+    <meta
+      name="description"
+      content="Watchers Bible — a free, offline-first Bible. 25 translations, instant search, highlights and notes, all on your device."
+    />
+    <title>Watchers Bible</title>
+    <script>
+      // Pre-paint theme: apply the saved theme before the first pixel so a
+      // dark or sepia user never sees a white flash, and the status bar
+      // always matches.
+      (function () {
+        try {
+          var s = JSON.parse(localStorage.getItem("wb-settings") || "{}");
+          var themes = { light: "#f7f7f5", sepia: "#f1e7d0", dark: "#121216" };
+          var t = themes[s.theme] ? s.theme : "light";
+          var bg = themes[t];
+          document.documentElement.dataset.theme = t;
+          document.documentElement.style.background = bg;
+          var f = s.fontSize ? s.fontSize : 17;
+          var lh = s.lineHeight ? s.lineHeight : 1.75;
+          var ff =
+            s.fontFamily === "sans"
+              ? '"Inter Variable", system-ui, sans-serif'
+              : '"Literata Variable", Georgia, serif';
+          document.documentElement.style.setProperty("--reader-font-size", f + "px");
+          document.documentElement.style.setProperty("--reader-line-height", String(lh));
+          document.documentElement.style.setProperty("--reader-font-family", ff);
+          var meta = document.getElementById("themeColorMeta");
+          if (meta) meta.setAttribute("content", bg);
+        } catch (e) {
+          /* defaults apply */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

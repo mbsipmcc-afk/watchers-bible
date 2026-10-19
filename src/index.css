@@ -1,0 +1,161 @@
+@import "tailwindcss";
+
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/literata";
+
+/* ─────────────────────────  palette  ───────────────────────── */
+:root {
+  --c-app: #f7f7f5;
+  --c-surface: #ffffff;
+  --c-surface2: #efeeea;
+  --c-fg: #1c1b19;
+  --c-muted: #6b6960;
+  --c-border: #e4e2dc;
+  --c-accent: #5b4bda;
+  --c-accent-fg: #ffffff;
+  --c-highlight-1: #fdf3a3; /* yellow */
+  --c-highlight-2: #bfe8c1; /* green  */
+  --c-highlight-3: #bcd9fb; /* blue   */
+  --c-highlight-4: #f9c2b8; /* orange */
+  --c-highlight-5: #e3c3f5; /* purple */
+  --c-verse-sel: rgba(91, 75, 218, 0.12);
+}
+
+[data-theme="sepia"] {
+  --c-app: #f1e7d0;
+  --c-surface: #f7efdd;
+  --c-surface2: #e9dec4;
+  --c-fg: #43331f;
+  --c-muted: #8a7458;
+  --c-border: #d9ccb0;
+  --c-accent: #9a6b2f;
+  --c-accent-fg: #fdf8ec;
+  --c-verse-sel: rgba(154, 107, 47, 0.14);
+}
+
+[data-theme="dark"] {
+  --c-app: #121216;
+  --c-surface: #1b1b21;
+  --c-surface2: #232329;
+  --c-fg: #e7e6e2;
+  --c-muted: #9b99a2;
+  --c-border: #2a2a32;
+  --c-accent: #8b7cff;
+  --c-accent-fg: #12121a;
+}
+
+/* ─────────────────────────  tailwind theme  ───────────────────────── */
+@theme inline {
+  --color-app: var(--c-app);
+  --color-surface: var(--c-surface);
+  --color-surface2: var(--c-surface2);
+  --color-fg: var(--c-fg);
+  --color-muted: var(--c-muted);
+  --color-border: var(--c-border);
+  --color-accent: var(--c-accent);
+  --color-accent-fg: var(--c-accent-fg);
+
+  --font-ui: "Inter Variable", system-ui, sans-serif;
+  --font-reader: "Literata Variable", Georgia, serif;
+
+  --c-highlight-rgb-1: 253, 243, 163;
+}
+
+/* ─────────────────────────  reader vars  ───────────────────────── */
+:root {
+  --reader-font-size: 17px;
+  --reader-line-height: 1.75;
+  --reader-font-family: var(--font-reader);
+}
+
+/* ─────────────────────────  base  ───────────────────────── */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--c-app);
+  color: var(--c-fg);
+  font-family: var(--font-ui);
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.reader-verse {
+  font-family: var(--reader-font-family);
+  font-size: var(--reader-font-size);
+  line-height: var(--reader-line-height);
+}
+
+/* verse number superscript */
+.verse-num {
+  font-family: var(--font-ui);
+  font-size: 0.62em;
+  font-weight: 600;
+  color: var(--c-muted);
+  vertical-align: super;
+  margin-right: 0.45em;
+  user-select: none;
+}
+
+/* search match mark */
+mark.match {
+  background: var(--c-highlight-1);
+  color: inherit;
+  border-radius: 2px;
+}
+
+/* highlight color chips used by pickers */
+.hl-1 { background: var(--c-highlight-1); }
+.hl-2 { background: var(--c-highlight-2); }
+.hl-3 { background: var(--c-highlight-3); }
+.hl-4 { background: var(--c-highlight-4); }
+.hl-5 { background: var(--c-highlight-5); }
+
+[data-highlight="1"] .verse-body,
+[data-highlight="2"] .verse-body,
+[data-highlight="3"] .verse-body,
+[data-highlight="4"] .verse-body,
+[data-highlight="5"] .verse-body {
+  border-radius: 4px;
+  padding: 0 2px;
+  box-decoration-break: clone;
+}
+[data-highlight="1"] .verse-body { background: var(--c-highlight-1); }
+[data-highlight="2"] .verse-body { background: var(--c-highlight-2); }
+[data-highlight="3"] .verse-body { background: var(--c-highlight-3); }
+[data-highlight="4"] .verse-body { background: var(--c-highlight-4); }
+[data-highlight="5"] .verse-body { background: var(--c-highlight-5); }
+
+/* note indicator dot after verse with a note */
+.verse-note-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 5px;
+  border-radius: 50%;
+  background: var(--c-accent);
+  vertical-align: middle;
+}
+
+/* thin scrollbars for desktop preview */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-border) transparent;
+}

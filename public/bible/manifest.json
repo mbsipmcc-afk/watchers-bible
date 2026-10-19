@@ -1,0 +1,785 @@
+{
+  "generatedAt": "2026-10-19T04:40:06.453Z",
+  "books": [
+    [
+      1,
+      "Gen",
+      "Genesis",
+      "Genesis",
+      50,
+      "OT"
+    ],
+    [
+      2,
+      "Exo",
+      "Exodus",
+      "Exodo",
+      40,
+      "OT"
+    ],
+    [
+      3,
+      "Lev",
+      "Leviticus",
+      "Levitico",
+      27,
+      "OT"
+    ],
+    [
+      4,
+      "Num",
+      "Numbers",
+      "Mga Bilang",
+      36,
+      "OT"
+    ],
+    [
+      5,
+      "Deu",
+      "Deuteronomy",
+      "Deuteronomio",
+      34,
+      "OT"
+    ],
+    [
+      6,
+      "Jos",
+      "Joshua",
+      "Josue",
+      24,
+      "OT"
+    ],
+    [
+      7,
+      "Jdg",
+      "Judges",
+      "Mga Hukom",
+      21,
+      "OT"
+    ],
+    [
+      8,
+      "Rut",
+      "Ruth",
+      "Ruth",
+      4,
+      "OT"
+    ],
+    [
+      9,
+      "1Sa",
+      "1 Samuel",
+      "1 Samuel",
+      31,
+      "OT"
+    ],
+    [
+      10,
+      "2Sa",
+      "2 Samuel",
+      "2 Samuel",
+      24,
+      "OT"
+    ],
+    [
+      11,
+      "1Ki",
+      "1 Kings",
+      "1 Mga Hari",
+      22,
+      "OT"
+    ],
+    [
+      12,
+      "2Ki",
+      "2 Kings",
+      "2 Mga Hari",
+      25,
+      "OT"
+    ],
+    [
+      13,
+      "1Ch",
+      "1 Chronicles",
+      "1 Mga Cronica",
+      29,
+      "OT"
+    ],
+    [
+      14,
+      "2Ch",
+      "2 Chronicles",
+      "2 Mga Cronica",
+      36,
+      "OT"
+    ],
+    [
+      15,
+      "Ezr",
+      "Ezra",
+      "Ezra",
+      10,
+      "OT"
+    ],
+    [
+      16,
+      "Neh",
+      "Nehemiah",
+      "Nehemias",
+      13,
+      "OT"
+    ],
+    [
+      17,
+      "Est",
+      "Esther",
+      "Ester",
+      10,
+      "OT"
+    ],
+    [
+      18,
+      "Job",
+      "Job",
+      "Job",
+      42,
+      "OT"
+    ],
+    [
+      19,
+      "Psa",
+      "Psalms",
+      "Mga Awit",
+      150,
+      "OT"
+    ],
+    [
+      20,
+      "Pro",
+      "Proverbs",
+      "Mga Kawikaan",
+      31,
+      "OT"
+    ],
+    [
+      21,
+      "Ecc",
+      "Ecclesiastes",
+      "Mangangaral",
+      12,
+      "OT"
+    ],
+    [
+      22,
+      "Sng",
+      "Song of Songs",
+      "Awit ni Solomon",
+      8,
+      "OT"
+    ],
+    [
+      23,
+      "Isa",
+      "Isaiah",
+      "Isaias",
+      66,
+      "OT"
+    ],
+    [
+      24,
+      "Jer",
+      "Jeremiah",
+      "Jeremias",
+      52,
+      "OT"
+    ],
+    [
+      25,
+      "Lam",
+      "Lamentations",
+      "Mga Panaghoy",
+      5,
+      "OT"
+    ],
+    [
+      26,
+      "Eze",
+      "Ezekiel",
+      "Ezekiel",
+      48,
+      "OT"
+    ],
+    [
+      27,
+      "Dan",
+      "Daniel",
+      "Daniel",
+      12,
+      "OT"
+    ],
+    [
+      28,
+      "Hos",
+      "Hosea",
+      "Oseas",
+      14,
+      "OT"
+    ],
+    [
+      29,
+      "Joe",
+      "Joel",
+      "Joel",
+      3,
+      "OT"
+    ],
+    [
+      30,
+      "Amo",
+      "Amos",
+      "Amos",
+      9,
+      "OT"
+    ],
+    [
+      31,
+      "Oba",
+      "Obadiah",
+      "Obadias",
+      1,
+      "OT"
+    ],
+    [
+      32,
+      "Jon",
+      "Jonah",
+      "Jonas",
+      4,
+      "OT"
+    ],
+    [
+      33,
+      "Mic",
+      "Micah",
+      "Mikas",
+      7,
+      "OT"
+    ],
+    [
+      34,
+      "Nah",
+      "Nahum",
+      "Nahum",
+      3,
+      "OT"
+    ],
+    [
+      35,
+      "Hab",
+      "Habakkuk",
+      "Habacuc",
+      3,
+      "OT"
+    ],
+    [
+      36,
+      "Zep",
+      "Zephaniah",
+      "Zefanias",
+      3,
+      "OT"
+    ],
+    [
+      37,
+      "Hag",
+      "Haggai",
+      "Hagai",
+      2,
+      "OT"
+    ],
+    [
+      38,
+      "Zec",
+      "Zechariah",
+      "Zacarias",
+      14,
+      "OT"
+    ],
+    [
+      39,
+      "Mal",
+      "Malachi",
+      "Malachias",
+      4,
+      "OT"
+    ],
+    [
+      40,
+      "Mat",
+      "Matthew",
+      "Mateo",
+      28,
+      "NT"
+    ],
+    [
+      41,
+      "Mar",
+      "Mark",
+      "Marcos",
+      16,
+      "NT"
+    ],
+    [
+      42,
+      "Luk",
+      "Luke",
+      "Lucas",
+      24,
+      "NT"
+    ],
+    [
+      43,
+      "Joh",
+      "John",
+      "Juan",
+      21,
+      "NT"
+    ],
+    [
+      44,
+      "Act",
+      "Acts",
+      "Mga Gawa",
+      28,
+      "NT"
+    ],
+    [
+      45,
+      "Rom",
+      "Romans",
+      "Mga Romano",
+      16,
+      "NT"
+    ],
+    [
+      46,
+      "1Co",
+      "1 Corinthians",
+      "1 Mga Corinto",
+      16,
+      "NT"
+    ],
+    [
+      47,
+      "2Co",
+      "2 Corinthians",
+      "2 Mga Corinto",
+      13,
+      "NT"
+    ],
+    [
+      48,
+      "Gal",
+      "Galatians",
+      "Mga Taga-Galacia",
+      6,
+      "NT"
+    ],
+    [
+      49,
+      "Eph",
+      "Ephesians",
+      "Mga Efeso",
+      6,
+      "NT"
+    ],
+    [
+      50,
+      "Php",
+      "Philippians",
+      "Mga Taga-Filipos",
+      4,
+      "NT"
+    ],
+    [
+      51,
+      "Col",
+      "Colossians",
+      "Mga Taga-Colosas",
+      4,
+      "NT"
+    ],
+    [
+      52,
+      "1Th",
+      "1 Thessalonians",
+      "1 Mga Taga-Tesalonica",
+      5,
+      "NT"
+    ],
+    [
+      53,
+      "2Th",
+      "2 Thessalonians",
+      "2 Mga Taga-Tesalonica",
+      3,
+      "NT"
+    ],
+    [
+      54,
+      "1Ti",
+      "1 Timothy",
+      "1 Timoteo",
+      6,
+      "NT"
+    ],
+    [
+      55,
+      "2Ti",
+      "2 Timothy",
+      "2 Timoteo",
+      4,
+      "NT"
+    ],
+    [
+      56,
+      "Tit",
+      "Titus",
+      "Tito",
+      3,
+      "NT"
+    ],
+    [
+      57,
+      "Phm",
+      "Philemon",
+      "Filemon",
+      1,
+      "NT"
+    ],
+    [
+      58,
+      "Heb",
+      "Hebrews",
+      "Mga Hebreo",
+      13,
+      "NT"
+    ],
+    [
+      59,
+      "Jas",
+      "James",
+      "Santiago",
+      5,
+      "NT"
+    ],
+    [
+      60,
+      "1Pe",
+      "1 Peter",
+      "1 Pedro",
+      5,
+      "NT"
+    ],
+    [
+      61,
+      "2Pe",
+      "2 Peter",
+      "2 Pedro",
+      3,
+      "NT"
+    ],
+    [
+      62,
+      "1Jo",
+      "1 John",
+      "1 Juan",
+      5,
+      "NT"
+    ],
+    [
+      63,
+      "2Jo",
+      "2 John",
+      "2 Juan",
+      1,
+      "NT"
+    ],
+    [
+      64,
+      "3Jo",
+      "3 John",
+      "3 Juan",
+      1,
+      "NT"
+    ],
+    [
+      65,
+      "Jud",
+      "Jude",
+      "Judas",
+      1,
+      "NT"
+    ],
+    [
+      66,
+      "Rev",
+      "Revelation",
+      "Pahayag",
+      22,
+      "NT"
+    ]
+  ],
+  "translations": [
+    {
+      "id": "adb",
+      "name": "Ang Dating Biblia (1905)",
+      "abbr": "ADB",
+      "lang": "tl",
+      "verses": 31102,
+      "books": 66,
+      "file": "adb.sqlite",
+      "bytes": 8757248
+    },
+    {
+      "id": "asv",
+      "name": "American Standard Version (1901)",
+      "abbr": "ASV",
+      "lang": "en",
+      "verses": 31085,
+      "books": 66,
+      "file": "asv.sqlite",
+      "bytes": 7794688
+    },
+    {
+      "id": "bsb",
+      "name": "Berean Standard Bible",
+      "abbr": "BSB",
+      "lang": "en",
+      "verses": 31086,
+      "books": 66,
+      "file": "bsb.sqlite",
+      "bytes": 7421952
+    },
+    {
+      "id": "ceb",
+      "name": "Cebuano Pinadayag 1917",
+      "abbr": "CEB",
+      "lang": "ceb",
+      "verses": 31102,
+      "books": 66,
+      "file": "ceb.sqlite",
+      "bytes": 8978432
+    },
+    {
+      "id": "chiun",
+      "name": "Chinese Union Version",
+      "abbr": "CUV",
+      "lang": "zh",
+      "verses": 31034,
+      "books": 66,
+      "file": "chiun.sqlite",
+      "bytes": 7069696
+    },
+    {
+      "id": "cjb",
+      "name": "Complete Jewish Bible",
+      "abbr": "CJB",
+      "lang": "en",
+      "verses": 31083,
+      "books": 66,
+      "file": "cjb.sqlite",
+      "bytes": 7753728
+    },
+    {
+      "id": "cunps",
+      "name": "Chinese Union New Punctuation (Simplified)",
+      "abbr": "CUNPS",
+      "lang": "zh",
+      "verses": 31101,
+      "books": 66,
+      "file": "cunps.sqlite",
+      "bytes": 7118848
+    },
+    {
+      "id": "gnv",
+      "name": "Geneva Bible (1599)",
+      "abbr": "GNV",
+      "lang": "en",
+      "verses": 31090,
+      "books": 66,
+      "file": "gnv.sqlite",
+      "bytes": 7831552
+    },
+    {
+      "id": "hiov",
+      "name": "Hindi Old Version (BSI)",
+      "abbr": "HIOV",
+      "lang": "hi",
+      "verses": 31102,
+      "books": 66,
+      "file": "hiov.sqlite",
+      "bytes": 14188544
+    },
+    {
+      "id": "kjv",
+      "name": "King James Version",
+      "abbr": "KJV",
+      "lang": "en",
+      "verses": 31102,
+      "books": 66,
+      "file": "kjv.sqlite",
+      "bytes": 7766016
+    },
+    {
+      "id": "krv",
+      "name": "Korean Revised Version",
+      "abbr": "KRV",
+      "lang": "ko",
+      "verses": 31103,
+      "books": 66,
+      "file": "krv.sqlite",
+      "bytes": 8019968
+    },
+    {
+      "id": "lsv",
+      "name": "Literal Standard Version",
+      "abbr": "LSV",
+      "lang": "en",
+      "verses": 31102,
+      "books": 66,
+      "file": "lsv.sqlite",
+      "bytes": 7725056
+    },
+    {
+      "id": "net",
+      "name": "New English Translation",
+      "abbr": "NET",
+      "lang": "en",
+      "verses": 31065,
+      "books": 66,
+      "file": "net.sqlite",
+      "bytes": 7675904
+    },
+    {
+      "id": "rv1960",
+      "name": "Reina-Valera 1960",
+      "abbr": "RV1960",
+      "lang": "es",
+      "verses": 31102,
+      "books": 66,
+      "file": "rv1960.sqlite",
+      "bytes": 7479296
+    },
+    {
+      "id": "synod",
+      "name": "Synodal (Russian)",
+      "abbr": "SYNOD",
+      "lang": "ru",
+      "verses": 31433,
+      "books": 66,
+      "file": "synod.sqlite",
+      "bytes": 9920512
+    },
+    {
+      "id": "tamovr",
+      "name": "Tamil Old Version",
+      "abbr": "TAMOVR",
+      "lang": "ta",
+      "verses": 31102,
+      "books": 66,
+      "file": "tamovr.sqlite",
+      "bytes": 17928192
+    },
+    {
+      "id": "tb",
+      "name": "Terjemahan Baru",
+      "abbr": "TB",
+      "lang": "id",
+      "verses": 31172,
+      "books": 66,
+      "file": "tb.sqlite",
+      "bytes": 8261632
+    },
+    {
+      "id": "tlv",
+      "name": "Tree of Life Version",
+      "abbr": "TLV",
+      "lang": "en",
+      "verses": 31149,
+      "books": 66,
+      "file": "tlv.sqlite",
+      "bytes": 7520256
+    },
+    {
+      "id": "tr",
+      "name": "Textus Receptus",
+      "abbr": "TR",
+      "lang": "grc",
+      "verses": 7957,
+      "books": 27,
+      "file": "tr.sqlite",
+      "bytes": 2535424
+    },
+    {
+      "id": "tsg",
+      "name": "Tausug Bible",
+      "abbr": "TSG",
+      "lang": "tsg",
+      "verses": 7959,
+      "books": 27,
+      "file": "tsg.sqlite",
+      "bytes": 2846720
+    },
+    {
+      "id": "ubio",
+      "name": "Біблія (Ohienko 1962)",
+      "abbr": "UBIO",
+      "lang": "uk",
+      "verses": 31170,
+      "books": 66,
+      "file": "ubio.sqlite",
+      "bytes": 9957376
+    },
+    {
+      "id": "vi1934",
+      "name": "Kinh Thánh (1934)",
+      "abbr": "VI1934",
+      "lang": "vi",
+      "verses": 31102,
+      "books": 66,
+      "file": "vi1934.sqlite",
+      "bytes": 8990720
+    },
+    {
+      "id": "web",
+      "name": "World English Bible",
+      "abbr": "WEB",
+      "lang": "en",
+      "verses": 31098,
+      "books": 66,
+      "file": "web.sqlite",
+      "bytes": 7569408
+    },
+    {
+      "id": "wlc",
+      "name": "Westminster Leningrad Codex",
+      "abbr": "WLC",
+      "lang": "hbo",
+      "verses": 23213,
+      "books": 39,
+      "file": "wlc.sqlite",
+      "bytes": 8564736
+    },
+    {
+      "id": "ylt",
+      "name": "Young's Literal Translation",
+      "abbr": "YLT",
+      "lang": "en",
+      "verses": 31102,
+      "books": 66,
+      "file": "ylt.sqlite",
+      "bytes": 7761920
+    }
+  ]
+}

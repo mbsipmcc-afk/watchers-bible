@@ -11,7 +11,7 @@ import { useSettings } from "../../app/settings-ctx";
 import { useManifest } from "../../app/use-manifest";
 import { navigate, readHash } from "../../app/router";
 import { bookShort } from "../../lib/reference";
-import { EmptyState, IconButton, Spinner, TopBar } from "../../components/ui";
+import { EmptyState, IconButton, SkeletonRows, Spinner, TopBar } from "../../components/ui";
 
 const PAGE = 60;
 
@@ -178,12 +178,17 @@ export default function SearchScreen({ initialQuery = "" }: { initialQuery?: str
               )}
             </div>
             {opening && !results ? (
-              <div className="flex justify-center pt-2">
-                <Spinner />
+              <div className="px-4 pt-2">
+                <SkeletonRows rows={5} />
+              </div>
+            ) : null}
+            {busy && !results && !opening && !err ? (
+              <div className="px-4 pt-2">
+                <SkeletonRows rows={3} />
               </div>
             ) : null}
             <div>
-              {(results ?? []).map((r) => (
+              {(results ?? []).map((r, i) => (
                 <button
                   key={`${r.book_nr}-${r.chapter}-${r.verse}`}
                   onClick={() =>
@@ -193,24 +198,31 @@ export default function SearchScreen({ initialQuery = "" }: { initialQuery?: str
                   }
                   className="block w-full border-b border-border px-4 py-3 text-left active:bg-surface2"
                 >
-                  <span className="block pb-0.5 text-[11px] font-semibold uppercase tracking-wide text-accent">
+                  <span
+                    className="fade-up block pb-0.5 text-[11px] font-bold uppercase tracking-[0.12em] text-gold"
+                    style={{ animationDelay: `${Math.min(i, 12) * 24}ms` }}
+                  >
                     {bookShort(r.book_nr)} {r.chapter}:{r.verse}
                   </span>
-                  <span className="reader-verse block leading-snug" style={{ fontSize: 14 }}>
+                  <span
+                    className="reader-verse fade-up block leading-snug"
+                    style={{ fontSize: 14, animationDelay: `${Math.min(i, 12) * 24 + 30}ms` }}
+                  >
                     <Marked text={r.text} terms={terms} />
                   </span>
                 </button>
               ))}
             </div>
-            {busy ? (
+            {busy && results && results.length > 0 ? (
               <div className="flex justify-center py-4">
-                <Spinner />
+                <Spinner size="sm" />
               </div>
             ) : !done && results && results.length > 0 ? (
               <div className="flex justify-center py-4">
                 <button
                   onClick={loadMore}
-                  className="h-10 rounded-xl bg-surface2 px-5 text-sm font-medium"
+                  className="press h-10 rounded-xl border border-border bg-surface px-5 text-sm font-medium"
+                  style={{ boxShadow: "var(--shadow-card)" }}
                 >
                   Load more
                 </button>

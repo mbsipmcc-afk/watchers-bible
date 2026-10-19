@@ -10,10 +10,25 @@ import { useSettings } from "../../app/settings-ctx";
 import type { ThemeName } from "../../lib/settings";
 import { SectionTitle, TopBar } from "../../components/ui";
 
-const THEMES: { key: ThemeName; label: string; icon: typeof Sun }[] = [
-  { key: "light", label: "Day", icon: Sun },
-  { key: "sepia", label: "Sepia", icon: Sunrise },
-  { key: "dark", label: "Night", icon: Moon },
+const THEMES: { key: ThemeName; label: string; icon: typeof Sun; swatch: string }[] = [
+  {
+    key: "light",
+    label: "Day",
+    icon: Sun,
+    swatch: "linear-gradient(135deg, #faf7f1 0%, #f4d8b8 45%, #4e42d8 100%)",
+  },
+  {
+    key: "sepia",
+    label: "Sepia",
+    icon: Sunrise,
+    swatch: "linear-gradient(135deg, #f3e9d2 0%, #d98e4a 55%, #9a6b2f 100%)",
+  },
+  {
+    key: "dark",
+    label: "Night",
+    icon: Moon,
+    swatch: "linear-gradient(135deg, #0d0d17 0%, #8b7cff 55%, #34d399 100%)",
+  },
 ];
 
 export default function SettingsScreen() {
@@ -85,12 +100,19 @@ export default function SettingsScreen() {
               <button
                 key={t.key}
                 onClick={() => update({ theme: t.key })}
-                className={`flex flex-1 flex-col items-center gap-1.5 rounded-xl border py-3 text-xs font-medium ${
+                className={`press flex flex-1 flex-col items-center gap-2 rounded-xl border py-3 text-xs font-medium ${
                   active ? "border-accent bg-surface2 text-accent" : "border-border text-muted"
                 }`}
               >
-                <Icon size={18} />
-                {t.label}
+                <span
+                  aria-hidden="true"
+                  className="h-6 w-6 rounded-full border border-black/10"
+                  style={{ background: t.swatch }}
+                />
+                <span className="flex items-center gap-1">
+                  <Icon size={13} />
+                  {t.label}
+                </span>
               </button>
             );
           })}
@@ -120,7 +142,7 @@ export default function SettingsScreen() {
         </p>
 
         <SectionTitle>Data & storage</SectionTitle>
-        <div className="rounded-xl border border-border bg-surface px-4 py-3 text-sm">
+        <div className="g-border rounded-xl px-4 py-3 text-sm">
           <div className="flex items-center justify-between">
             <span className="text-muted">Bibles on this device</span>
             <span className="font-medium">

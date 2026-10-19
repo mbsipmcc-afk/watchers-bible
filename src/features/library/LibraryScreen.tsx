@@ -69,9 +69,17 @@ export default function LibraryScreen() {
       </div>
 
       <main className="pb-28">
-        {data === null ? null : data.length === 0 ? (
+        {data == null ? null : data.length === 0 ? (
           <EmptyState
-            icon={null}
+            icon={
+              tab === "notes" ? (
+                <FileTextIcon size={22} />
+              ) : tab === "bookmarks" ? (
+                <BookmarkIcon size={22} />
+              ) : (
+                <Highlighter size={22} />
+              )
+            }
             text={
               tab === "notes"
                 ? "Notes you write on verses will appear here."

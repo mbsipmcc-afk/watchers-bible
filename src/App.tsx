@@ -1,3 +1,4 @@
+import { LazyMotion, domAnimation, MotionConfig, AnimatePresence, m } from "motion/react";
 import { SettingsProvider } from "./app/settings-ctx";
 import { useRoute } from "./app/router";
 import { TabBar } from "./components/TabBar";
@@ -28,14 +29,30 @@ function Screen() {
 }
 
 export default function App() {
+  const route = useRoute();
   return (
     <SettingsProvider>
-      <div className="mx-auto min-h-full max-w-md">
-        <ErrorBoundary>
-          <Screen />
-        </ErrorBoundary>
-      </div>
-      <TabBar />
+      <MotionConfig reducedMotion="user">
+        <LazyMotion features={domAnimation} strict>
+          <div className="aurora" aria-hidden="true" />
+          <div className="relative z-10 mx-auto min-h-full max-w-md">
+            <ErrorBoundary>
+              <AnimatePresence mode="wait" initial={false}>
+                <m.div
+                  key={route.name}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                >
+                  <Screen />
+                </m.div>
+              </AnimatePresence>
+            </ErrorBoundary>
+          </div>
+          <TabBar />
+        </LazyMotion>
+      </MotionConfig>
     </SettingsProvider>
   );
 }

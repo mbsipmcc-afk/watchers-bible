@@ -3,48 +3,83 @@
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/literata";
 
-/* ─────────────────────────  palette  ───────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════
+   WATCHERS BIBLE — design tokens
+   Concept: "Watchers of the Night, Keepers of the Dawn."
+   Night = deep space indigo + aurora + sacred gold.
+   Day   = linen paper + lapis/rose dawn gradients.
+   Sepia = parchment + ember gold.
+   Gold is the sacred 10%: verse numbers, references, on-device chips.
+   ═══════════════════════════════════════════════════════════════════ */
+
 :root {
-  --c-app: #f7f7f5;
+  /* Day — Linen & Lapis */
+  --c-app: #faf7f1;
   --c-surface: #ffffff;
-  --c-surface2: #efeeea;
-  --c-fg: #1c1b19;
-  --c-muted: #6b6960;
-  --c-border: #e4e2dc;
-  --c-accent: #5b4bda;
+  --c-surface2: #f1ede4;
+  --c-fg: #201b22;
+  --c-muted: #6e6880;
+  --c-border: rgba(37, 30, 60, 0.1);
+  --c-accent: #4e42d8;
+  --c-accent-2: #c46ba8;
   --c-accent-fg: #ffffff;
-  --c-highlight-1: #fdf3a3; /* yellow */
-  --c-highlight-2: #bfe8c1; /* green  */
-  --c-highlight-3: #bcd9fb; /* blue   */
-  --c-highlight-4: #f9c2b8; /* orange */
-  --c-highlight-5: #e3c3f5; /* purple */
-  --c-verse-sel: rgba(91, 75, 218, 0.12);
+  --c-gold: #a4700e;
+  --c-gold-soft: rgba(164, 112, 14, 0.12);
+  --c-verse-sel: rgba(78, 66, 216, 0.11);
+  --hl-tint-1: rgba(180, 100, 95, 0.08);
+  --aurora-a: rgba(78, 66, 216, 0.07);
+  --aurora-b: rgba(196, 107, 168, 0.08);
+  --aurora-c: rgba(240, 170, 110, 0.1);
+  --glass: rgba(255, 255, 255, 0.72);
+  --shadow-card: 0 8px 24px rgba(60, 40, 120, 0.08);
+  --shadow-dock: 0 12px 32px rgba(46, 32, 90, 0.14);
 }
 
 [data-theme="sepia"] {
-  --c-app: #f1e7d0;
-  --c-surface: #f7efdd;
-  --c-surface2: #e9dec4;
-  --c-fg: #43331f;
+  --c-app: #f3e9d2;
+  --c-surface: #fbf3df;
+  --c-surface2: #eadbba;
+  --c-fg: #3e2f1c;
   --c-muted: #8a7458;
-  --c-border: #d9ccb0;
+  --c-border: rgba(90, 70, 40, 0.18);
   --c-accent: #9a6b2f;
+  --c-accent-2: #d98e4a;
   --c-accent-fg: #fdf8ec;
-  --c-verse-sel: rgba(154, 107, 47, 0.14);
+  --c-gold: #8c6a2f;
+  --c-gold-soft: rgba(140, 106, 47, 0.14);
+  --c-verse-sel: rgba(154, 107, 47, 0.15);
+  --hl-tint-1: rgba(130, 85, 40, 0.08);
+  --aurora-a: rgba(154, 107, 47, 0.1);
+  --aurora-b: rgba(217, 142, 74, 0.12);
+  --aurora-c: rgba(140, 106, 47, 0.08);
+  --glass: rgba(251, 243, 223, 0.7);
+  --shadow-card: 0 8px 24px rgba(90, 60, 20, 0.1);
+  --shadow-dock: 0 12px 32px rgba(90, 60, 20, 0.18);
 }
 
 [data-theme="dark"] {
-  --c-app: #121216;
-  --c-surface: #1b1b21;
-  --c-surface2: #232329;
-  --c-fg: #e7e6e2;
-  --c-muted: #9b99a2;
-  --c-border: #2a2a32;
+  --c-app: #0d0d17;
+  --c-surface: #15151f;
+  --c-surface2: #1d1d2b;
+  --c-fg: #eceaf4;
+  --c-muted: #8d8aa3;
+  --c-border: rgba(139, 124, 255, 0.14);
   --c-accent: #8b7cff;
-  --c-accent-fg: #12121a;
+  --c-accent-2: #5ea2ff;
+  --c-accent-fg: #0d0d17;
+  --c-gold: #e8c97a;
+  --c-gold-soft: rgba(232, 201, 122, 0.12);
+  --c-verse-sel: rgba(139, 124, 255, 0.16);
+  --hl-tint-1: rgba(139, 124, 255, 0.08);
+  --aurora-a: rgba(139, 124, 255, 0.13);
+  --aurora-b: rgba(94, 162, 255, 0.11);
+  --aurora-c: rgba(52, 211, 153, 0.07);
+  --glass: rgba(21, 21, 31, 0.66);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --shadow-dock: 0 12px 40px rgba(0, 0, 0, 0.55);
 }
 
-/* ─────────────────────────  tailwind theme  ───────────────────────── */
+/* ── tailwind theme bridge ─────────────────────────────────────── */
 @theme inline {
   --color-app: var(--c-app);
   --color-surface: var(--c-surface);
@@ -53,22 +88,213 @@
   --color-muted: var(--c-muted);
   --color-border: var(--c-border);
   --color-accent: var(--c-accent);
+  --color-accent2: var(--c-accent-2);
   --color-accent-fg: var(--c-accent-fg);
-
+  --color-gold: var(--c-gold);
   --font-ui: "Inter Variable", system-ui, sans-serif;
   --font-reader: "Literata Variable", Georgia, serif;
 
-  --c-highlight-rgb-1: 253, 243, 163;
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* ─────────────────────────  reader vars  ───────────────────────── */
 :root {
   --reader-font-size: 17px;
   --reader-line-height: 1.75;
   --reader-font-family: var(--font-reader);
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* ─────────────────────────  base  ───────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════
+   signature gradients & surfaces
+   ═══════════════════════════════════════════════════════════════════ */
+
+.gold-text {
+  color: var(--c-gold);
+}
+
+/* primary gradient — used for pills, CTAs, progress */
+.bg-accent-grad {
+  background-image: linear-gradient(120deg, var(--c-accent) 0%, var(--c-accent-2) 100%);
+}
+.grad-text {
+  background-image: linear-gradient(120deg, var(--c-accent) 20%, var(--c-accent-2) 80%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* gradient hairline border — cards, hero panels */
+.g-border {
+  border: 1px solid transparent;
+  background-image:
+    linear-gradient(var(--c-surface), var(--c-surface)),
+    linear-gradient(130deg, var(--c-accent) 0%, var(--c-accent-2) 55%, transparent 120%);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  box-shadow: var(--shadow-card);
+}
+
+/* frosted glass bar — top bar + dock */
+.glass {
+  background-color: var(--glass);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(160%);
+}
+
+/* shimmer skeleton */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+  background: var(--c-surface2);
+}
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.24),
+    transparent
+  );
+  animation: shimmer 1.6s infinite;
+}
+[data-theme="dark"] .shimmer::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(236, 234, 244, 0.09),
+    transparent
+  );
+}
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* soft decorative blob behind empty-state icons */
+.blob {
+  position: relative;
+}
+.blob::before {
+  content: "";
+  position: absolute;
+  inset: -14px;
+  border-radius: 9999px;
+  background: radial-gradient(
+    closest-side,
+    var(--aurora-a),
+    transparent 75%
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   aurora atmosphere — fixed wash behind all content
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .aurora {
+    animation: aurora-drift 38s var(--ease-smooth) infinite alternate;
+  }
+}
+.aurora {
+  position: fixed;
+  inset: -20% -30% auto -30%;
+  height: 130vh;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(42% 34% at 22% 6%, var(--aurora-a), transparent 70%),
+    radial-gradient(38% 30% at 82% 12%, var(--aurora-b), transparent 72%),
+    radial-gradient(30% 26% at 55% -4%, var(--aurora-c), transparent 75%);
+}
+@keyframes aurora-drift {
+  0% {
+    transform: translate3d(-2%, -1%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(2%, 1.5%, 0) scale(1.05);
+  }
+  100% {
+    transform: translate3d(-1%, 2%, 0) scale(1.02);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   motion — entrances, pops, slides
+   ═══════════════════════════════════════════════════════════════════ */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .fade-up {
+    animation: fade-up 0.5s var(--ease-smooth) both;
+  }
+  .verse-in {
+    animation: fade-up 0.42s var(--ease-smooth) both;
+  }
+  .chapter-in {
+    animation: chapter-in 0.34s var(--ease-smooth) both;
+  }
+  .pop-in {
+    animation: pop-in 0.32s var(--ease-smooth) both;
+  }
+}
+@keyframes chapter-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  60% {
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* tactile press */
+.press {
+  transition: transform 0.14s var(--ease-smooth);
+}
+.press:active {
+  transform: scale(0.97);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   base
+   ═══════════════════════════════════════════════════════════════════ */
+
 html,
 body,
 #root {
@@ -97,61 +323,77 @@ button {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+/* ── reader ────────────────────────────────────────────────────────── */
+
 .reader-verse {
   font-family: var(--reader-font-family);
   font-size: var(--reader-font-size);
   line-height: var(--reader-line-height);
 }
 
-/* verse number superscript */
 .verse-num {
   font-family: var(--font-ui);
   font-size: 0.62em;
-  font-weight: 600;
-  color: var(--c-muted);
+  font-weight: 700;
+  color: var(--c-gold);
   vertical-align: super;
-  margin-right: 0.45em;
+  margin-right: 0.5em;
   user-select: none;
 }
 
-/* search match mark */
 mark.match {
-  background: var(--c-highlight-1);
+  background: linear-gradient(
+    120deg,
+    var(--c-gold-soft),
+    var(--c-gold-soft)
+  );
   color: inherit;
-  border-radius: 2px;
+  border-radius: 3px;
+  box-shadow: inset 0 -0.35em var(--c-gold-soft);
 }
 
-/* highlight color chips used by pickers */
-.hl-1 { background: var(--c-highlight-1); }
-.hl-2 { background: var(--c-highlight-2); }
-.hl-3 { background: var(--c-highlight-3); }
-.hl-4 { background: var(--c-highlight-4); }
-.hl-5 { background: var(--c-highlight-5); }
+.hl-1 { background: rgba(253, 216, 108, 0.55); }
+.hl-2 { background: rgba(146, 220, 160, 0.55); }
+.hl-3 { background: rgba(140, 190, 250, 0.55); }
+.hl-4 { background: rgba(250, 178, 150, 0.55); }
+.hl-5 { background: rgba(214, 170, 246, 0.55); }
 
 [data-highlight="1"] .verse-body,
 [data-highlight="2"] .verse-body,
 [data-highlight="3"] .verse-body,
 [data-highlight="4"] .verse-body,
 [data-highlight="5"] .verse-body {
-  border-radius: 4px;
-  padding: 0 2px;
+  border-radius: 5px;
+  padding: 0 3px;
   box-decoration-break: clone;
+  color: #201b22;
 }
-[data-highlight="1"] .verse-body { background: var(--c-highlight-1); }
-[data-highlight="2"] .verse-body { background: var(--c-highlight-2); }
-[data-highlight="3"] .verse-body { background: var(--c-highlight-3); }
-[data-highlight="4"] .verse-body { background: var(--c-highlight-4); }
-[data-highlight="5"] .verse-body { background: var(--c-highlight-5); }
+[data-highlight="1"] .verse-body { background: linear-gradient(120deg, #fdf3a3, #ffe89a); }
+[data-highlight="2"] .verse-body { background: linear-gradient(120deg, #bfe8c1, #a7efba); }
+[data-highlight="3"] .verse-body { background: linear-gradient(120deg, #bcd9fb, #a9d4ff); }
+[data-highlight="4"] .verse-body { background: linear-gradient(120deg, #f9c2b8, #ffb3a3); }
+[data-highlight="5"] .verse-body { background: linear-gradient(120deg, #e3c3f5, #d9b1f2); }
 
-/* note indicator dot after verse with a note */
 .verse-note-dot {
   display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-left: 5px;
+  width: 7px;
+  height: 7px;
+  margin-left: 7px;
   border-radius: 50%;
-  background: var(--c-accent);
+  background: radial-gradient(circle at 35% 35%, var(--c-accent-2), var(--c-accent));
+  box-shadow: 0 0 0 3px var(--c-accent-fg), 0 0 10px var(--aurora-a);
   vertical-align: middle;
+}
+
+/* drop cap — off by default, toggled in reader display sheet */
+.dropcap > p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--reader-font-family);
+  font-size: 3.1em;
+  line-height: 0.82;
+  font-weight: 600;
+  color: var(--c-gold);
+  padding: 4px 10px 0 0;
 }
 
 /* thin scrollbars for desktop preview */

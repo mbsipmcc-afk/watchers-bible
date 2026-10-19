@@ -65,7 +65,7 @@ export function NoteSheet({
         ) : null}
         <button
           onClick={onSave}
-          className="h-11 flex-1 rounded-xl bg-accent text-[15px] font-semibold text-accent-fg active:opacity-80"
+          className="bg-accent-grad press h-11 flex-1 rounded-xl text-[15px] font-semibold text-accent-fg"
         >
           {existingId ? "Update note" : "Save note"}
         </button>

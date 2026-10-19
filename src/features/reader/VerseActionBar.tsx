@@ -29,8 +29,9 @@ export function VerseActionBar({
   onClearSelection: () => void;
 }) {
   return (
-    <div className="fixed inset-x-0 bottom-[68px] z-30 mx-auto max-w-md px-3">
-      <div className="flex flex-col gap-2 rounded-2xl border border-border bg-surface/95 p-2.5 shadow-xl backdrop-blur">
+    <div className="fixed inset-x-0 bottom-[76px] z-30 mx-auto max-w-md px-3">
+      <div className="pop-in flex flex-col gap-2 rounded-2xl border border-border glass p-2.5"
+        style={{ boxShadow: "var(--shadow-dock)" }}>
         <div className="flex items-center justify-between gap-2">
           <span className="px-1 text-xs font-semibold text-muted">
             {count} verse{count > 1 ? "s" : ""} selected

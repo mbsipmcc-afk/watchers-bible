@@ -135,10 +135,16 @@ export default function TranslationsScreen() {
                       <Spinner size="sm" />
                     ) : isPersisted ? (
                       <>
+                        <span
+                          className="gold-text flex h-7 items-center gap-1 rounded-full px-2 text-[10px] font-bold uppercase tracking-wider"
+                          style={{ background: "var(--c-gold-soft)" }}
+                        >
+                          <Check size={12} strokeWidth={3} /> device
+                        </span>
                         <button
                           aria-label={`Remove ${t.abbr}`}
                           onClick={() => remove(t.id)}
-                          className="flex h-9 w-9 items-center justify-center rounded-full text-muted hover:bg-surface2"
+                          className="press flex h-9 w-9 items-center justify-center rounded-full text-muted hover:bg-surface2"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -159,13 +165,14 @@ export default function TranslationsScreen() {
                   </div>
                   {st?.phase === "downloading" ? (
                     <div className="mt-2">
-                      <div className="h-1.5 overflow-hidden rounded-full bg-surface2">
+                      <div className="relative h-1.5 overflow-hidden rounded-full bg-surface2">
                         <div
-                          className="h-full rounded-full bg-accent transition-[width]"
+                          className="h-full rounded-full bg-accent-grad transition-[width]"
                           style={{
                             width: `${Math.min(100, (st.loaded / (st.total ?? t.bytes)) * 100)}%`,
                           }}
                         />
+                        <div className="shimmer absolute inset-0 opacity-60" />
                       </div>
                       <p className="mt-1 text-[11px] text-muted">
                         {(st.loaded / 1e6).toFixed(1)} MB

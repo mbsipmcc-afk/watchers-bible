@@ -29,7 +29,7 @@ import { useSettings } from "../../app/settings-ctx";
 import { useManifest } from "../../app/use-manifest";
 import { navigate, readHash, type Route } from "../../app/router";
 import { bookName, fmtShareText } from "../../lib/reference";
-import { EmptyState, IconButton, Spinner, TopBar } from "../../components/ui";
+import { EmptyState, IconButton, SkeletonRows, Spinner, TopBar } from "../../components/ui";
 import { BookPicker } from "./BookPicker";
 import { ReaderSheet } from "./ReaderSheet";
 import { NoteSheet } from "./NoteSheet";
@@ -367,18 +367,23 @@ export default function ReaderScreen({ route }: { route: Route & { name: "read" 
         {err ? <ErrorCard err={err} onRetry={() => pos && setPos({ ...pos })} /> : null}
 
         {!verses && !err ? (
-          <div className="flex flex-col items-center gap-3 pt-24 text-muted">
-            <Spinner />
-            <p className="text-sm">
-              Loading {bookName(pos?.book ?? 1)} {pos?.chapter ?? 1}
-            </p>
-            {trPersist === false && trMeta ? (
-              <p className="text-xs text-muted">
-                First open of {trMeta.abbr} downloads ~
-                {Math.max(1, Math.round((trMeta.bytes ?? 0) / 1e6))} MB · then it's stored on your
-                device
+          <div className="pt-6">
+            <div className="flex flex-col items-center gap-2 pb-6 text-muted">
+              <Spinner />
+              <p className="text-sm">
+                Loading {bookName(pos?.book ?? 1)} {pos?.chapter ?? 1}
               </p>
-            ) : null}
+              {trPersist === false && trMeta ? (
+                <p className="text-center text-xs text-muted">
+                  First open of {trMeta.abbr} downloads ~
+                  {Math.max(1, Math.round((trMeta.bytes ?? 0) / 1e6))} MB · then it's stored on
+                  your device
+                </p>
+              ) : null}
+            </div>
+            <div className="mt-4">
+              <SkeletonRows rows={6} tall />
+            </div>
           </div>
         ) : null}
 
@@ -386,9 +391,12 @@ export default function ReaderScreen({ route }: { route: Route & { name: "read" 
           <EmptyState text="This chapter is not part of this edition (OT/NT-only corpus)." />
         ) : null}
 
-        {verses && verses.length > 0 ? (
-          <div className="select-text">
-            {verses.map((v) => {
+        {verses && verses.length > 0 && pos ? (
+          <div
+            key={`${pos.translation}-${pos.book}-${pos.chapter}`}
+            className={`chapter-in select-text ${settings.dropCap ? "dropcap" : ""}`}
+          >
+            {verses.map((v, i) => {
               const hlColor = hl.get(v.verse);
               const isSel = selection.has(v.verse);
               return (
@@ -397,7 +405,8 @@ export default function ReaderScreen({ route }: { route: Route & { name: "read" 
                   key={v.verse}
                   onClick={() => toggleSelection(v.verse)}
                   data-highlight={hlColor ?? undefined}
-                  className={`reader-verse -mx-2 cursor-pointer rounded-lg px-2 py-0.5 ${
+                  style={{ animationDelay: `${Math.min(i, 14) * 22}ms` }}
+                  className={`reader-verse verse-in -mx-2 cursor-pointer rounded-lg px-2 py-0.5 ${
                     isSel ? "bg-[var(--c-verse-sel)]" : ""
                   }`}
                 >
@@ -415,7 +424,7 @@ export default function ReaderScreen({ route }: { route: Route & { name: "read" 
                     />
                   ) : null}
                   {marked.has(v.verse) ? (
-                    <span className="text-accent" aria-label="Bookmarked">
+                    <span className="gold-text text-[0.85em]" aria-label="Bookmarked">
                       {" ⚑"}
                     </span>
                   ) : null}
@@ -426,18 +435,20 @@ export default function ReaderScreen({ route }: { route: Route & { name: "read" 
         ) : null}
 
         {verses && verses.length > 0 && pos ? (
-          <div className="mt-8 flex items-center justify-between gap-3">
+          <div className="fade-up mt-8 flex items-center justify-between gap-3" style={{ animationDelay: "120ms" }}>
             <button
               onClick={() => stepChapter(-1)}
-              className="flex h-11 items-center gap-1 rounded-xl bg-surface2 px-4 text-sm font-medium active:opacity-70"
+              className="press flex h-11 items-center gap-1 rounded-xl border border-border bg-surface px-4 text-sm font-medium"
+              style={{ boxShadow: "var(--shadow-card)" }}
             >
-              <ChevronLeft size={18} /> Previous
+              <ChevronLeft size={18} className="text-accent" /> Previous
             </button>
             <button
               onClick={() => stepChapter(1)}
-              className="flex h-11 items-center gap-1 rounded-xl bg-surface2 px-4 text-sm font-medium active:opacity-70"
+              className="press flex h-11 items-center gap-1 rounded-xl border border-border bg-surface px-4 text-sm font-medium"
+              style={{ boxShadow: "var(--shadow-card)" }}
             >
-              Next <ChevronRight size={18} />
+              Next <ChevronRight size={18} className="text-accent" />
             </button>
           </div>
         ) : null}
@@ -508,7 +519,7 @@ function ErrorCard({ err, onRetry }: { err: BibleError; onRetry: () => void }) {
     navigator.onLine === false &&
     (err.code === "corpus_fetch" || err.code === "open_timeout");
   return (
-    <div className="mx-1 rounded-2xl border border-border bg-surface p-5">
+    <div className="g-border fade-up mx-1 rounded-2xl p-5">
       <p className="text-sm font-semibold">
         {offline
           ? "You're offline"

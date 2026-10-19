@@ -66,10 +66,10 @@ export function BookPicker({
               <button
                 key={ch}
                 onClick={() => onPick(openMeta, ch)}
-                className={`flex h-11 items-center justify-center rounded-lg text-[15px] font-medium ${
+                className={`press flex h-11 items-center justify-center rounded-lg text-[15px] font-medium ${
                   openBook === currentBook && currentChapter === ch
-                    ? "bg-accent text-accent-fg"
-                    : "bg-surface2 text-fg active:opacity-70"
+                    ? "bg-accent-grad text-accent-fg"
+                    : "bg-surface2 text-fg"
                 }`}
               >
                 {ch}
@@ -131,7 +131,7 @@ function BookList({
         <button
           key={b.nr}
           onClick={() => onOpen(b.nr)}
-          className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-[15px] ${
+          className={`press flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-[15px] ${
             b.nr === currentBook ? "font-semibold text-accent" : ""
           } hover:bg-surface2`}
         >

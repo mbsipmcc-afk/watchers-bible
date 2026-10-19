@@ -104,6 +104,28 @@ export function ReaderSheet({
           </button>
         ))}
       </div>
+
+      <SectionTitle>Chapter opening</SectionTitle>
+      <button
+        onClick={() => update({ dropCap: !settings.dropCap })}
+        className="flex w-full items-center justify-between rounded-xl border border-border px-4 py-3"
+      >
+        <span className="text-left">
+          <span className="block text-sm font-medium">Drop cap</span>
+          <span className="block text-xs text-muted">Gold initial letter at chapter start</span>
+        </span>
+        <span
+          className={`relative h-6 w-11 rounded-full transition-colors ${
+            settings.dropCap ? "bg-accent-grad" : "bg-surface2 border border-border"
+          }`}
+        >
+          <span
+            className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${
+              settings.dropCap ? "left-[22px]" : "left-0.5"
+            }`}
+          />
+        </span>
+      </button>
     </Sheet>
   );
 }

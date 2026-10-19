@@ -14,6 +14,7 @@ export type Settings = {
   lineHeight: number; // 1.5..2.2
   fontFamily: FontFamilyName;
   translation: string; // active translation id
+  dropCap: boolean; // gold drop-cap on the chapter's first letter
 };
 
 const KEY = "wb-settings";
@@ -24,6 +25,7 @@ const DEFAULTS: Settings = {
   lineHeight: 1.75,
   fontFamily: "serif",
   translation: "kjv",
+  dropCap: false,
 };
 
 export function loadSettings(): Settings {
@@ -46,9 +48,9 @@ export function saveSettings(next: Settings): void {
 }
 
 const THEME_COLOR: Record<ThemeName, string> = {
-  light: "#f7f7f5",
-  sepia: "#f1e7d0",
-  dark: "#121216",
+  light: "#faf7f1",
+  sepia: "#f3e9d2",
+  dark: "#0d0d17",
 };
 
 /** Apply settings to the document (theme attr, reader CSS vars, meta color). */

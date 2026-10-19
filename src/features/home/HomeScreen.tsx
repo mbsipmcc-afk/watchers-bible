@@ -1,12 +1,15 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { BookOpen, Bookmark, Search as SearchIcon, Languages, Settings as SettingsIcon, Shuffle, Sparkles } from "lucide-react";
 import {
-  chapterVerses,
-  openTranslation,
-  persistedTranslationIds,
-  type TranslationId,
-} from "../../lib/bible";
-import { getState, type LastRead } from "../../lib/userdata";
+  BookOpen,
+  Bookmark,
+  Search as SearchIcon,
+  Languages,
+  Settings as SettingsIcon,
+  Shuffle,
+  Sparkles,
+} from "lucide-react";
+import { chapterVerses, openTranslation, persistedTranslationIds, type TranslationId } from "../../lib/bible";
+import { getState, readLastReadSync, type LastRead } from "../../lib/userdata";
 import { useSettings } from "../../app/settings-ctx";
 import { useManifest } from "../../app/use-manifest";
 import { navigate, readHash } from "../../app/router";
@@ -18,7 +21,6 @@ export default function HomeScreen() {
   const { settings } = useSettings();
   const manifestState = useManifest();
   const starter = useStarterPack();
-
 
   const [lastRead, setLastRead] = useState<LastRead | null>(null);
   const [vod, setVod] = useState<{
@@ -34,6 +36,7 @@ export default function HomeScreen() {
   const [vodNeedsDownload, setVodNeedsDownload] = useState(false);
 
   useEffect(() => {
+    setLastRead(readLastReadSync());
     getState<LastRead>("lastRead").then((lr) => setLastRead(lr ?? null));
   }, []);
 
@@ -97,7 +100,7 @@ export default function HomeScreen() {
     <div>
       <TopBar
         title={
-          <span className="flex items-center gap-2">
+          <span className="flex items-center justify-center gap-2">
             <BookOpen size={18} className="text-accent" />
             Watchers Bible
           </span>
@@ -109,18 +112,18 @@ export default function HomeScreen() {
         }
       />
 
-      <main className="px-4 pb-28">
+      <main className="px-4 pb-32">
         {starter.active && starter.current ? (
-          <div className="mt-3 flex items-center gap-3 rounded-xl border border-border bg-surface2 px-4 py-3">
-            <Spinner className="h-4 w-4" />
+          <div className="g-border fade-up mt-3 flex items-center gap-3 rounded-2xl px-4 py-3">
+            <Spinner size="sm" />
             <div className="min-w-0 flex-1">
               <p className="truncate text-xs font-medium">
                 Preparing the starter translations · {starter.current.toUpperCase()} (
                 {(starter.loaded / 1e6).toFixed(1)} MB)
               </p>
-              <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-surface">
+              <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-surface2">
                 <div
-                  className="h-full rounded-full bg-accent"
+                  className="h-full rounded-full bg-accent-grad"
                   style={{ width: `${((starter.done + 0.5) / Math.max(1, starter.total)) * 100}%` }}
                 />
               </div>
@@ -132,115 +135,150 @@ export default function HomeScreen() {
         ) : null}
 
         <Section title="Continue reading">
-          {lastRead ? (
-            <button
-              onClick={() =>
-                navigate(readHash(lastRead.translation, lastRead.book, lastRead.chapter, lastRead.verse))
-              }
-              className="flex w-full items-center justify-between rounded-2xl border border-border bg-surface p-4 text-left active:opacity-80"
-            >
-              <span>
-                <span className="block text-[15px] font-semibold">
-                  {bookName(lastRead.book)} {lastRead.chapter}
+          <div className="fade-up" style={{ animationDelay: "40ms" }}>
+            {lastRead ? (
+              <button
+                onClick={() =>
+                  navigate(readHash(lastRead.translation, lastRead.book, lastRead.chapter, lastRead.verse))
+                }
+                className="g-border press flex w-full items-center justify-between rounded-2xl p-4 text-left"
+              >
+                <span>
+                  <span className="block text-[15px] font-semibold tracking-tight">
+                    {bookName(lastRead.book)} {lastRead.chapter}
+                  </span>
+                  <span className="mt-0.5 block text-xs text-muted">
+                    {lastRead.verse ? `Verse ${lastRead.verse} · ` : ""}
+                    {lastRead.translation.toUpperCase()}
+                  </span>
                 </span>
-                <span className="mt-0.5 block text-xs text-muted">
-                  {lastRead.verse ? `Verse ${lastRead.verse} · ` : ""}
-                  {lastRead.translation.toUpperCase()}
+                <span className="bg-accent-grad rounded-xl px-4 py-2 text-sm font-semibold text-accent-fg">
+                  Resume
                 </span>
-              </span>
-              <span className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-fg">
-                Resume
-              </span>
-            </button>
-          ) : (
-            <button
-              onClick={() => navigate(readHash(settings.translation, 1, 1))}
-              className="flex w-full items-center justify-between rounded-2xl border border-border bg-surface p-4 text-left active:opacity-80"
-            >
-              <span>
-                <span className="block text-[15px] font-semibold">Start reading</span>
-                <span className="mt-0.5 block text-xs text-muted">Genesis 1 · free, offline</span>
-              </span>
-              <span className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-fg">
-                Begin
-              </span>
-            </button>
-          )}
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate(readHash(settings.translation, 1, 1))}
+                className="g-border press flex w-full items-center justify-between rounded-2xl p-4 text-left"
+              >
+                <span>
+                  <span className="block text-[15px] font-semibold tracking-tight">
+                    Start reading
+                  </span>
+                  <span className="mt-0.5 block text-xs text-muted">
+                    Genesis 1 · free, offline
+                  </span>
+                </span>
+                <span className="bg-accent-grad rounded-xl px-4 py-2 text-sm font-semibold text-accent-fg">
+                  Begin
+                </span>
+              </button>
+            )}
+          </div>
         </Section>
 
         <Section title="Verse of the day">
-          <button
-            disabled={!vod}
-            onClick={() =>
-              vod && navigate(readHash(vod.translation, vod.book, vod.chapter, vod.verse))
-            }
-            className={`w-full rounded-2xl border border-border bg-surface p-4 text-left ${
-              vod ? "active:opacity-80" : "opacity-90"
-            }`}
-          >
-            <div className="flex items-center gap-2 pb-2 text-xs font-semibold uppercase tracking-wider text-accent">
-              <Sparkles size={14} />
-              {vod
-                ? `${bookName(vod.book)} ${vod.chapter}:${vod.verse} · ${vod.abbr ?? vod.translation.toUpperCase()} · #${verseOfTheDaySeed()}`
-                : "Preparing…"}
-            </div>
-            {vod ? (
-              <p className="reader-verse line-clamp-4">{vod.text}</p>
-            ) : vodNeedsDownload ? (
-              <p className="text-sm text-muted">
-                Grab a translation under Translations and today's verse will appear here.
-              </p>
-            ) : vodError ? (
-              <p className="text-sm text-muted">
-                Could not load the verse text yet — download a translation in the Translations tab.
-              </p>
-            ) : vodLoading ? (
-              <div className="flex py-2">
-                <Spinner size="sm" />
+          <div className="fade-up" style={{ animationDelay: "90ms" }}>
+            <button
+              disabled={!vod}
+              onClick={() =>
+                vod && navigate(readHash(vod.translation, vod.book, vod.chapter, vod.verse))
+              }
+              className={`relative w-full overflow-hidden rounded-2xl border border-border p-5 text-left ${
+                vod ? "press" : "opacity-95"
+              }`}
+              style={{
+                background:
+                  "linear-gradient(135deg, var(--aurora-a), var(--c-surface) 45%), var(--c-surface)",
+                boxShadow: "var(--shadow-card)",
+              }}
+            >
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-8 -top-10 h-36 w-36 rounded-full"
+                style={{
+                  background: "radial-gradient(closest-side, var(--aurora-b), transparent 72%)",
+                }}
+              />
+              <div className="relative flex items-center gap-2 pb-2.5 text-[11px] font-bold uppercase tracking-[0.16em] text-gold">
+                <Sparkles size={13} />
+                <span>
+                  {vod
+                    ? `${bookName(vod.book)} ${vod.chapter}:${vod.verse} · ${vod.abbr ?? vod.translation.toUpperCase()} · #${verseOfTheDaySeed()}`
+                    : "Verse of the day"}
+                </span>
               </div>
-            ) : null}
-          </button>
+              <div className="relative">
+                {vod ? (
+                  <p className="reader-verse" style={{ fontSize: 15.5 }}>
+                    {vod.text}
+                  </p>
+                ) : vodNeedsDownload ? (
+                  <p className="text-sm leading-relaxed text-muted">
+                    Grab a translation in the Translations tab and today's verse will appear here.
+                  </p>
+                ) : vodError ? (
+                  <p className="text-sm leading-relaxed text-muted">
+                    Could not load the verse text yet — download a translation in the Translations
+                    tab.
+                  </p>
+                ) : vodLoading ? (
+                  <div className="flex py-1.5">
+                    <Spinner size="sm" />
+                  </div>
+                ) : null}
+              </div>
+            </button>
+          </div>
         </Section>
 
         <Section title="Explore">
           <div className="grid grid-cols-2 gap-3">
-            <Tile
-              icon={<SearchIcon size={20} />}
-              label="Search the Bible"
-              sub="Instant, on-device"
-              onClick={() => navigate("#/search")}
-            />
-            <Tile
-              icon={<Languages size={20} />}
-              label="25 translations"
-              sub="Download once, read offline"
-              onClick={() => navigate("#/translations")}
-            />
-            <Tile
-              icon={<Bookmark size={20} />}
-              label="Your library"
-              sub="Highlights, notes, bookmarks"
-              onClick={() => navigate("#/library")}
-            />
-            <Tile
-              icon={<Shuffle size={20} />}
-              label="Random chapter"
-              sub="Let the Word find you"
-              onClick={() => {
-                const m = manifestState;
-                if (!m || m.books.length === 0) {
-                  navigate(readHash(settings.translation, 1, 1));
-                  return;
-                }
-                const book = m.books[Math.floor(Math.random() * m.books.length)];
-                const ch = 1 + Math.floor(Math.random() * book.chapters);
-                navigate(readHash(settings.translation, book.nr, ch));
-              }}
-            />
+            <div className="fade-up" style={{ animationDelay: "140ms" }}>
+              <Tile
+                icon={<SearchIcon size={19} />}
+                label="Search the Bible"
+                sub="Instant, on-device"
+                onClick={() => navigate("#/search")}
+              />
+            </div>
+            <div className="fade-up" style={{ animationDelay: "180ms" }}>
+              <Tile
+                icon={<Languages size={19} />}
+                label="25 translations"
+                sub="Download once, read offline"
+                onClick={() => navigate("#/translations")}
+              />
+            </div>
+            <div className="fade-up" style={{ animationDelay: "220ms" }}>
+              <Tile
+                icon={<Bookmark size={19} />}
+                label="Your library"
+                sub="Highlights, notes, bookmarks"
+                onClick={() => navigate("#/library")}
+              />
+            </div>
+            <div className="fade-up" style={{ animationDelay: "260ms" }}>
+              <Tile
+                icon={<Shuffle size={19} />}
+                label="Random chapter"
+                sub="Let the Word find you"
+                onClick={() => {
+                  const m = manifestState;
+                  if (!m || m.books.length === 0) {
+                    navigate(readHash(settings.translation, 1, 1));
+                    return;
+                  }
+                  const book = m.books[Math.floor(Math.random() * m.books.length)];
+                  const ch = 1 + Math.floor(Math.random() * book.chapters);
+                  navigate(readHash(settings.translation, book.nr, ch));
+                }}
+              />
+            </div>
           </div>
         </Section>
 
-        <p className="px-2 pt-8 text-center text-xs leading-relaxed text-muted">
+        <p className="fade-up px-2 pt-9 text-center text-xs leading-relaxed text-muted" style={{ animationDelay: "320ms" }}>
           Watchers Bible is free for everyone. The Bible lives on your device — private, instant,
           and fully offline.
         </p>
@@ -252,7 +290,7 @@ export default function HomeScreen() {
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="pt-5">
-      <h2 className="px-1 pb-2 text-xs font-semibold uppercase tracking-wider text-muted">
+      <h2 className="px-1 pb-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted">
         {title}
       </h2>
       {children}
@@ -274,10 +312,14 @@ function Tile({
   return (
     <button
       onClick={onClick}
-      className="rounded-2xl border border-border bg-surface p-4 text-left active:opacity-80"
+      className="press h-full w-full rounded-2xl border border-border bg-surface p-4 text-left"
+      style={{ boxShadow: "var(--shadow-card)" }}
     >
-      <span className="text-accent">{icon}</span>
-      <span className="mt-2 block text-sm font-semibold leading-tight">{label}</span>
+      <span className="mb-2.5 flex h-9 w-9 items-center justify-center rounded-xl text-accent"
+        style={{ background: "var(--c-verse-sel)" }}>
+        {icon}
+      </span>
+      <span className="block text-sm font-semibold leading-tight tracking-tight">{label}</span>
       <span className="mt-1 block text-xs text-muted">{sub}</span>
     </button>
   );
@@ -296,7 +338,7 @@ function IconButton2({
     <button
       aria-label={label}
       onClick={onClick}
-      className="flex h-10 w-10 items-center justify-center rounded-full text-fg hover:bg-surface2"
+      className="press flex h-10 w-10 items-center justify-center rounded-full text-fg hover:bg-surface2"
     >
       {children}
     </button>

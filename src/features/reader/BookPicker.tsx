@@ -2,20 +2,29 @@ import { useEffect, useMemo, useState } from "react";
 import { ChevronRight, Search } from "lucide-react";
 import type { BookMeta } from "../../lib/bible";
 import { Sheet, Spinner } from "../../components/ui";
+import type { BookNamesLang } from "../../lib/settings";
 
 export function BookPicker({
   open,
   onClose,
   books,
+  bounds,
+  corpusNote,
   currentBook,
   currentChapter,
+  bookLang,
+  otherLang,
   onPick,
 }: {
   open: boolean;
   onClose: () => void;
   books: BookMeta[] | null;
+  bounds: { lo: number; hi: number } | null;
+  corpusNote?: string;
   currentBook?: number;
   currentChapter?: number;
+  bookLang: BookNamesLang;
+  otherLang: BookNamesLang;
   onPick: (book: BookMeta, chapter: number) => void;
 }) {
   const [filter, setFilter] = useState("");
@@ -29,32 +38,28 @@ export function BookPicker({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  const groups = useMemo(() => {
+  const nameIn = (b: BookMeta, lang: BookNamesLang) =>
+    lang === "tl" ? b.name_tl || b.name_en : b.name_en;
+
+  const visibleBooks = useMemo(() => {
     if (!books) return null;
     const f = filter.trim().toLowerCase();
-    const match = f
-      ? books.filter(
-          (b) =>
-            b.name_en.toLowerCase().includes(f) ||
-            b.abbr.toLowerCase().includes(f) ||
-            b.name_tl.toLowerCase().includes(f),
-        )
+    const inBounds = bounds
+      ? books.filter((b) => b.nr >= bounds.lo && b.nr <= bounds.hi)
       : books;
-    return {
-      ot: match.filter((b) => b.testament === "OT"),
-      nt: match.filter((b) => b.testament === "NT"),
-    };
-  }, [books, filter]);
+    if (!f) return inBounds;
+    return inBounds.filter(
+      (b) =>
+        b.name_en.toLowerCase().includes(f) ||
+        b.name_tl.toLowerCase().includes(f) ||
+        b.abbr.toLowerCase().includes(f),
+    );
+  }, [books, bounds, filter]);
 
   const openMeta = books?.find((b) => b.nr === openBook) ?? null;
 
   return (
-    <Sheet
-      open={open}
-      onClose={onClose}
-      title={openMeta ? openMeta.name_en : "Books"}
-      full
-    >
+    <Sheet open={open} onClose={onClose} title={openMeta ? nameIn(openMeta, bookLang) : "Books"} full>
       {!books ? (
         <div className="flex justify-center py-10">
           <Spinner />
@@ -89,18 +94,36 @@ export function BookPicker({
                 className="w-full bg-transparent text-[15px] outline-none placeholder:text-muted"
               />
             </div>
+            {corpusNote && visibleBooks && visibleBooks.length < (books?.length ?? 0) ? (
+              <p className="px-1 pb-1 pt-2 text-[11px] text-muted">{corpusNote}</p>
+            ) : null}
           </div>
-          {groups?.ot.length ? (
+          {visibleBooks?.filter((b) => b.testament === "OT").length ? (
             <>
               <Section>Old Testament</Section>
-              <BookList list={groups.ot} currentBook={currentBook} onOpen={setOpenBook} />
+              <BookList
+                list={visibleBooks.filter((b) => b.testament === "OT")}
+                currentBook={currentBook}
+                bookLang={bookLang}
+                otherLang={otherLang}
+                onOpen={setOpenBook}
+              />
             </>
           ) : null}
-          {groups?.nt.length ? (
+          {visibleBooks?.filter((b) => b.testament === "NT").length ? (
             <>
               <Section>New Testament</Section>
-              <BookList list={groups.nt} currentBook={currentBook} onOpen={setOpenBook} />
+              <BookList
+                list={visibleBooks.filter((b) => b.testament === "NT")}
+                currentBook={currentBook}
+                bookLang={bookLang}
+                otherLang={otherLang}
+                onOpen={setOpenBook}
+              />
             </>
+          ) : null}
+          {visibleBooks && visibleBooks.length === 0 ? (
+            <p className="py-8 text-center text-sm text-muted">No book matches “{filter}”.</p>
           ) : null}
         </div>
       )}
@@ -119,10 +142,14 @@ function Section({ children }: { children: string }) {
 function BookList({
   list,
   currentBook,
+  bookLang,
+  otherLang,
   onOpen,
 }: {
   list: BookMeta[];
   currentBook?: number;
+  bookLang: BookNamesLang;
+  otherLang: BookNamesLang;
   onOpen: (nr: number) => void;
 }) {
   return (
@@ -135,8 +162,13 @@ function BookList({
             b.nr === currentBook ? "font-semibold text-accent" : ""
           } hover:bg-surface2`}
         >
-          {b.name_en}
-          <ChevronRight size={16} className="text-muted" />
+          <span className="min-w-0">
+            {bookLang === "tl" ? b.name_tl || b.name_en : b.name_en}
+          </span>
+          <span className="flex shrink-0 items-center gap-2 text-xs text-muted">
+            {otherLang === "tl" ? b.name_tl || b.name_en : b.name_en}
+            <ChevronRight size={16} />
+          </span>
         </button>
       ))}
     </div>

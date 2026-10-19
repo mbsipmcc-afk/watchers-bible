@@ -92,9 +92,10 @@ export function TabBar() {
               ref={(el) => {
                 btnRefs.current[t.key] = el;
               }}
+              aria-label={t.label}
               onClick={() => go(t.key)}
               aria-current={isActive ? "page" : undefined}
-              className={`relative z-10 flex flex-1 items-center justify-center gap-1.5 rounded-[20px] py-2 ${
+              className={`relative z-10 flex min-h-[46px] flex-1 items-center justify-center gap-1.5 rounded-[20px] py-2 text-[10px] font-medium ${
                 isActive ? "text-accent" : "text-muted"
               }`}
             >

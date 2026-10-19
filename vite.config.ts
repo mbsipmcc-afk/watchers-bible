@@ -15,11 +15,31 @@ export default defineConfig({
         short_name: "Watchers",
         description:
           "A free, offline-first Bible. 25 translations, instant search, highlights and notes — all on your device.",
-        theme_color: "#121216",
-        background_color: "#121216",
+        theme_color: "#0d0d17",
+        background_color: "#0d0d17",
         display: "standalone",
+        display_override: ["standalone", "minimal-ui"],
         orientation: "portrait",
         start_url: "/",
+        lang: "en",
+        dir: "ltr",
+        categories: ["books", "education", "lifestyle"],
+        shortcuts: [
+          {
+            name: "Keep reading",
+            short_name: "Bible",
+            description: "Open the reader at your last position",
+            url: "/?go=read",
+            icons: [{ src: "/icons/icon-192.png", sizes: "192x192" }],
+          },
+          {
+            name: "Search",
+            short_name: "Search",
+            description: "Search every verse on this device",
+            url: "/?go=search",
+            icons: [{ src: "/icons/icon-192.png", sizes: "192x192" }],
+          },
+        ],
         icons: [
           { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
           { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },

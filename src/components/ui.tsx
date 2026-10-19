@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 import { AnimatePresence, m } from "motion/react";
 import { X } from "lucide-react";
 
@@ -60,7 +60,7 @@ export function IconButton({
   );
 }
 
-/* ── Bottom sheet — spring slide-up, scrim fade, drag handle ─────────────── */
+/* ── Bottom sheet — spring slide-up, scrim fade, focus-trapped dialog ────── */
 
 export function Sheet({
   open,
@@ -75,13 +75,46 @@ export function Sheet({
   children: ReactNode;
   full?: boolean;
 }) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const restoreRef = useRef<HTMLElement | null>(null);
+
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+    restoreRef.current = document.activeElement as HTMLElement | null;
+    // Focus the panel so TalkBack/VoiceOver & keyboards land inside the dialog.
+    panelRef.current?.focus();
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        onClose();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      // Minimal focus trap: cycle within the sheet.
+      const panel = panelRef.current;
+      if (!panel) return;
+      const focusables = panel.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      } else if (!panel.contains(document.activeElement)) {
+        e.preventDefault();
+        first.focus();
+      }
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      restoreRef.current?.focus?.();
+    };
   }, [open, onClose]);
 
   return (
@@ -97,11 +130,16 @@ export function Sheet({
             onClick={onClose}
           />
           <m.div
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={typeof title === "string" ? title : "Dialog"}
+            tabIndex={-1}
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", stiffness: 360, damping: 34 }}
-            className={`absolute inset-x-0 bottom-0 mx-auto flex max-w-md flex-col rounded-t-3xl border-t border-border bg-surface shadow-2xl ${
+            className={`absolute inset-x-0 bottom-0 mx-auto flex max-w-md flex-col rounded-t-3xl border-t border-border bg-surface shadow-2xl outline-none ${
               full ? "top-6" : "max-h-[75vh]"
             }`}
           >

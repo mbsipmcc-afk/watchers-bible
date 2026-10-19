@@ -4,6 +4,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Languages,
+  Share2,
   SlidersHorizontal,
 } from "lucide-react";
 import {
@@ -28,7 +29,7 @@ import {
 import { useSettings } from "../../app/settings-ctx";
 import { useManifest } from "../../app/use-manifest";
 import { navigate, readHash, type Route } from "../../app/router";
-import { bookName, fmtShareText } from "../../lib/reference";
+import { bookLabel, fmtShareText } from "../../lib/reference";
 import { EmptyState, IconButton, SkeletonRows, Spinner, TopBar } from "../../components/ui";
 import { BookPicker } from "./BookPicker";
 import { ReaderSheet } from "./ReaderSheet";
@@ -54,6 +55,7 @@ export default function ReaderScreen({ route }: { route: Route & { name: "read" 
   const [selection, setSelection] = useState<Set<number>>(new Set());
   const [toast, setToast] = useState<string | null>(null);
   const [trPersist, setTrPersist] = useState<boolean | undefined>(undefined);
+  const [corpusBounds, setCorpusBounds] = useState<{ lo: number; hi: number } | null>(null);
 
   // chapter study data
   const [hl, setHl] = useState<Map<number, number>>(new Map());
@@ -123,6 +125,9 @@ export default function ReaderScreen({ route }: { route: Route & { name: "read" 
       .then((info) => {
         if (!alive) return undefined;
         setTrPersist(info.persisted);
+        if (Number.isFinite(info.lo) && Number.isFinite(info.hi) && info.hi > 0) {
+          setCorpusBounds({ lo: info.lo, hi: info.hi });
+        }
         return chapterVerses({
           translation: pos.translation,
           bookNr: pos.book,
@@ -274,6 +279,7 @@ export default function ReaderScreen({ route }: { route: Route & { name: "read" 
       trMeta?.abbr,
       selectedRows,
       [...selection].sort((a, b) => a - b),
+      bookLabel(pos.book, settings.bookNames, books),
     );
     try {
       if (share && navigator.share) {
@@ -284,6 +290,35 @@ export default function ReaderScreen({ route }: { route: Route & { name: "read" 
       showToast("Copied");
     } catch {
       /* clipboard denied; ignore */
+    }
+  };
+
+  const linkFor = (verse?: number) =>
+    `${location.origin}${location.pathname}${readHash(pos!.translation, pos!.book, pos!.chapter, verse)}`;
+
+  const copyLink = async (verse?: number) => {
+    try {
+      await navigator.clipboard.writeText(linkFor(verse));
+      showToast("Link copied");
+    } catch {
+      /* clipboard denied */
+    }
+  };
+
+  const shareLink = async () => {
+    if (!pos) return;
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: `${bookLabel(pos.book, settings.bookNames, books)} ${pos.chapter}`,
+          url: linkFor(),
+        });
+        return;
+      }
+      await navigator.clipboard.writeText(linkFor());
+      showToast("Link copied");
+    } catch {
+      /* share dismissed */
     }
   };
 
@@ -338,7 +373,7 @@ export default function ReaderScreen({ route }: { route: Route & { name: "read" 
   /* ── render ────────────────────────────────────────────────────────────── */
 
   const title = bookMeta
-    ? `${bookMeta.name_en} ${pos?.chapter ?? 1} · ${trMeta?.abbr ?? ""}`
+    ? `${bookLabel(pos?.book ?? 1, settings.bookNames, books)} ${pos?.chapter ?? 1} · ${trMeta?.abbr ?? ""}`
     : "Bible";
 
   return (
@@ -353,6 +388,9 @@ export default function ReaderScreen({ route }: { route: Route & { name: "read" 
         onClickTitle={() => setSheet("books")}
         right={
           <>
+            <IconButton label="Share chapter link" onClick={shareLink}>
+              <Share2 size={20} />
+            </IconButton>
             <IconButton label="Translation" onClick={() => setSheet("tr")}>
               <Languages size={20} />
             </IconButton>
@@ -367,11 +405,12 @@ export default function ReaderScreen({ route }: { route: Route & { name: "read" 
         {err ? <ErrorCard err={err} onRetry={() => pos && setPos({ ...pos })} /> : null}
 
         {!verses && !err ? (
-          <div className="pt-6">
+          <div className="pt-6" role="status" aria-live="polite">
             <div className="flex flex-col items-center gap-2 pb-6 text-muted">
               <Spinner />
               <p className="text-sm">
-                Loading {bookName(pos?.book ?? 1)} {pos?.chapter ?? 1}
+                Loading {bookLabel(pos?.book ?? 1, settings.bookNames, books)}{" "}
+                {pos?.chapter ?? 1}
               </p>
               {trPersist === false && trMeta ? (
                 <p className="text-center text-xs text-muted">
@@ -455,7 +494,11 @@ export default function ReaderScreen({ route }: { route: Route & { name: "read" 
       </main>
 
       {toast ? (
-        <div className="fixed inset-x-0 bottom-28 z-40 mx-auto w-fit rounded-full bg-fg px-4 py-1.5 text-sm text-app shadow-lg">
+        <div
+          role="status"
+          aria-live="polite"
+          className="pop-in fixed inset-x-0 bottom-28 z-40 mx-auto w-fit rounded-full bg-fg px-4 py-1.5 text-sm text-app shadow-lg"
+        >
           {toast}
         </div>
       ) : null}
@@ -469,6 +512,10 @@ export default function ReaderScreen({ route }: { route: Route & { name: "read" 
           onBookmark={toggleBookmark}
           onNote={openNote}
           onCopy={() => copyOrShare(false)}
+          onCopyLink={() => {
+            const v = selectedRows[selectedRows.length - 1]?.verse;
+            copyLink(selectedRows.length === 1 ? v : undefined);
+          }}
           onShare={() => copyOrShare(true)}
           onClearSelection={() => setSelection(new Set())}
         />
@@ -478,8 +525,22 @@ export default function ReaderScreen({ route }: { route: Route & { name: "read" 
         open={sheet === "books"}
         onClose={() => setSheet("none")}
         books={books}
+        bounds={corpusBounds}
+        corpusNote={
+          trMeta
+            ? `${trMeta.name} — ${
+                trMeta.books === 66
+                  ? "complete Bible"
+                  : trMeta.books === 27
+                    ? "New Testament only"
+                    : "Old Testament only"
+              }`
+            : undefined
+        }
         currentBook={pos?.book}
         currentChapter={pos?.chapter}
+        bookLang={settings.bookNames}
+        otherLang={settings.bookNames === "en" ? "tl" : "en"}
         onPick={gotoBook}
       />
 
@@ -501,7 +562,7 @@ export default function ReaderScreen({ route }: { route: Route & { name: "read" 
           open
           onClose={() => setNoteOpen(null)}
           note={noteOpen.row}
-          refLabel={`${bookName(pos.book)} ${pos.chapter}:${noteOpen.verse}`}
+          refLabel={`${bookLabel(pos.book, settings.bookNames, books)} ${pos.chapter}:${noteOpen.verse}`}
           translation={pos.translation}
           book={pos.book}
           chapter={pos.chapter}

@@ -13,7 +13,7 @@ import { getState, readLastReadSync, type LastRead } from "../../lib/userdata";
 import { useSettings } from "../../app/settings-ctx";
 import { useManifest } from "../../app/use-manifest";
 import { navigate, readHash } from "../../app/router";
-import { bookName, verseOfTheDayRef, verseOfTheDaySeed } from "../../lib/reference";
+import { bookLabel, verseOfTheDayRef, verseOfTheDaySeed } from "../../lib/reference";
 import { Spinner, TopBar } from "../../components/ui";
 import { useStarterPack } from "./use-starter-pack";
 
@@ -144,9 +144,10 @@ export default function HomeScreen() {
                 className="g-border press flex w-full items-center justify-between rounded-2xl p-4 text-left"
               >
                 <span>
-                  <span className="block text-[15px] font-semibold tracking-tight">
-                    {bookName(lastRead.book)} {lastRead.chapter}
-                  </span>
+                <span className="block text-[15px] font-semibold tracking-tight">
+                  {bookLabel(lastRead.book, settings.bookNames, manifestState?.books ?? null)}{" "}
+                  {lastRead.chapter}
+                </span>
                   <span className="mt-0.5 block text-xs text-muted">
                     {lastRead.verse ? `Verse ${lastRead.verse} · ` : ""}
                     {lastRead.translation.toUpperCase()}
@@ -204,7 +205,7 @@ export default function HomeScreen() {
                 <Sparkles size={13} />
                 <span>
                   {vod
-                    ? `${bookName(vod.book)} ${vod.chapter}:${vod.verse} · ${vod.abbr ?? vod.translation.toUpperCase()} · #${verseOfTheDaySeed()}`
+                    ? `${bookLabel(vod.book, settings.bookNames, manifestState?.books ?? null)} ${vod.chapter}:${vod.verse} · ${vod.abbr ?? vod.translation.toUpperCase()} · #${verseOfTheDaySeed()}`
                     : "Verse of the day"}
                 </span>
               </div>

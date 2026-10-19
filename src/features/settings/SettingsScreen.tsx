@@ -6,9 +6,11 @@ import {
   resetLibrary,
   type BibleManifest,
 } from "../../lib/bible";
+import { db } from "../../lib/userdata";
+import { LICENSES, LICENSE_CATEGORY_LABEL } from "../../lib/licenses";
 import { useSettings } from "../../app/settings-ctx";
 import type { ThemeName } from "../../lib/settings";
-import { SectionTitle, TopBar } from "../../components/ui";
+import { SectionTitle, Sheet, TopBar } from "../../components/ui";
 
 const THEMES: { key: ThemeName; label: string; icon: typeof Sun; swatch: string }[] = [
   {
@@ -39,6 +41,7 @@ export default function SettingsScreen() {
     usageMB: number;
     persistent: boolean | null;
   } | null>(null);
+  const [credits, setCredits] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -82,8 +85,31 @@ export default function SettingsScreen() {
 
   const wipeAll = async () => {
     if (confirm("Remove every downloaded translation from this device?")) {
-      await resetLibrary();
+      const res = await resetLibrary();
       setPersistedIds(new Set());
+      setStorage((s) => (s ? { ...s, usageMB: Math.max(0, s.usageMB - Math.round(onDeviceMB / 1e6)) } : s));
+      void res;
+    }
+  };
+
+  const backup = async () => {
+    try {
+      const data = {
+        exportedAt: new Date().toISOString(),
+        app: "watchers-bible",
+        notes: await db.notes.toArray(),
+        highlights: await db.highlights.toArray(),
+        bookmarks: await db.bookmarks.toArray(),
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `watchers-bible-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+    } catch {
+      /* export failed silently */
     }
   };
 
@@ -135,6 +161,31 @@ export default function SettingsScreen() {
           </>
         ) : null}
 
+        <SectionTitle>Book names</SectionTitle>
+        <div className="flex gap-2">
+          {(
+            [
+              { key: "en", label: "English" },
+              { key: "tl", label: "Tagalog" },
+            ] as const
+          ).map((o) => (
+            <button
+              key={o.key}
+              onClick={() => update({ bookNames: o.key })}
+              className={`press flex-1 rounded-xl border py-2.5 text-sm font-medium ${
+                settings.bookNames === o.key
+                  ? "border-accent bg-surface2 text-accent"
+                  : "border-border text-muted"
+              }`}
+            >
+              {o.label}
+            </button>
+          ))}
+        </div>
+        <p className="px-1 pt-2 text-xs text-muted">
+          Chip captions in the book picker always show the other language as a hint.
+        </p>
+
         <SectionTitle>Reading display</SectionTitle>
         <p className="px-1 text-sm leading-relaxed text-muted">
           Text size, typeface and line spacing are adjusted in the reader — open any Bible chapter
@@ -165,8 +216,22 @@ export default function SettingsScreen() {
           </div>
         </div>
         <button
+          onClick={backup}
+          className="press mt-3 flex w-full items-center gap-2 rounded-xl border border-border px-4 py-3 text-left text-sm text-fg"
+        >
+          <span className="bg-accent-grad h-8 w-8 items-center justify-center rounded-lg text-accent-fg flex text-xs font-bold">
+            ↓
+          </span>
+          <span>
+            <span className="block font-medium">Backup my study data</span>
+            <span className="block text-xs text-muted">
+              Downloads notes, highlights and bookmarks as JSON
+            </span>
+          </span>
+        </button>
+        <button
           onClick={wipeAll}
-          className="mt-3 flex w-full items-center gap-2 rounded-xl border border-border px-4 py-3 text-left text-sm text-fg active:opacity-70"
+          className="press mt-3 flex w-full items-center gap-2 rounded-xl border border-border px-4 py-3 text-left text-sm text-fg"
         >
           <Trash2 size={16} className="text-muted" />
           Remove all downloaded translations
@@ -182,8 +247,49 @@ export default function SettingsScreen() {
           12 languages, instant full-text search, highlights, bookmarks and notes. Everything runs
           on your device: no account, no tracking, fully offline.
         </p>
-        <p className="px-1 pt-2 text-xs text-muted">Version 1.0</p>
+        <button
+          onClick={() => setCredits(true)}
+          className="press mt-3 w-full rounded-xl border border-border px-4 py-3 text-left text-sm font-medium text-fg"
+        >
+          About the translations · rights & credits →
+        </button>
+        <p className="px-1 pt-2 text-xs text-muted">Version 1.0.2</p>
       </main>
+
+      <Sheet open={credits} onClose={() => setCredits(false)} title="Translations · rights & credits" full>
+        <p className="pb-3 text-xs leading-relaxed text-muted">
+          Draft summary — verify each line with the publisher before any commercial distribution or
+          store publication.
+        </p>
+        <ul className="space-y-2.5">
+          {(manifest?.translations ?? []).map((t) => {
+            const lic = LICENSES[t.id as keyof typeof LICENSES];
+            return (
+              <li key={t.id} className="rounded-xl border border-border bg-surface2/60 px-3 py-2.5">
+                <div className="flex items-baseline justify-between gap-2">
+                  <span className="text-[13px] font-semibold">
+                    {t.name} <span className="text-muted">({t.abbr})</span>
+                  </span>
+                  <span
+                    className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
+                      lic?.category === "pd"
+                        ? "text-green-700"
+                        : lic?.category === "free"
+                          ? "text-accent"
+                          : "text-gold"
+                    }`}
+                  >
+                    {lic ? LICENSE_CATEGORY_LABEL[lic.category] : "Verify"}
+                  </span>
+                </div>
+                <p className="mt-1 text-xs leading-relaxed text-muted">
+                  {lic?.line ?? "Status unknown — verify with the publisher."}
+                </p>
+              </li>
+            );
+          })}
+        </ul>
+      </Sheet>
     </div>
   );
 }

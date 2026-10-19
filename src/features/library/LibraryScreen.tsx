@@ -1,11 +1,12 @@
 import { useState, type ReactNode } from "react";
-import { Bookmark as BookmarkIcon, FileText as FileTextIcon, Highlighter } from "lucide-react";
+import { Bookmark as BookmarkIcon, FileText as FileTextIcon, Highlighter, Pencil, Trash2 } from "lucide-react";
 import { navigate, readHash } from "../../app/router";
 import { useSettings } from "../../app/settings-ctx";
 import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "../../lib/userdata";
+import { db, deleteNote, type NoteRow } from "../../lib/userdata";
 import { bookName } from "../../lib/reference";
 import { EmptyState, TopBar } from "../../components/ui";
+import { NoteSheet } from "../reader/NoteSheet";
 
 type Tab = "highlights" | "bookmarks" | "notes";
 
@@ -17,6 +18,7 @@ const TABS: { key: Tab; label: string; icon: typeof BookmarkIcon }[] = [
 
 export default function LibraryScreen() {
   const [tab, setTab] = useState<Tab>("highlights");
+  const [editing, setEditing] = useState<NoteRow | null>(null);
   const { settings } = useSettings();
 
   const highlights = useLiveQuery(
@@ -128,6 +130,32 @@ export default function LibraryScreen() {
                 <li key={n.id}>
                   <RowButton
                     onClick={() => open(n.translation, n.book, n.chapter, n.verse)}
+                    trailing={
+                      <span className="flex shrink-0 items-center">
+                        <button
+                          aria-label="Edit note"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditing(n);
+                          }}
+                          className="press flex h-9 w-9 items-center justify-center rounded-full text-muted hover:bg-surface2"
+                        >
+                          <Pencil size={15} />
+                        </button>
+                        <button
+                          aria-label="Delete note"
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            if (n.id && confirm(`Delete the note on ${bookName(n.book)} ${n.chapter}:${n.verse}?`)) {
+                              await deleteNote(n.id);
+                            }
+                          }}
+                          className="press flex h-9 w-9 items-center justify-center rounded-full text-muted hover:bg-surface2"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </span>
+                    }
                     leading={
                       <FileTextIcon size={16} className="shrink-0 text-accent" />
                     }
@@ -146,6 +174,20 @@ export default function LibraryScreen() {
           </p>
         ) : null}
       </main>
+
+      <NoteSheet
+        open={!!editing}
+        onClose={() => setEditing(null)}
+        note={editing ?? undefined}
+        refLabel={
+          editing ? `${bookName(editing.book)} ${editing.chapter}:${editing.verse}` : ""
+        }
+        translation={editing?.translation ?? ""}
+        book={editing?.book ?? 0}
+        chapter={editing?.chapter ?? 0}
+        verse={editing?.verse ?? 0}
+        onSaved={() => setEditing(null)}
+      />
     </div>
   );
 }
@@ -155,22 +197,25 @@ function RowButton({
   leading,
   title,
   sub,
+  trailing,
 }: {
   onClick: () => void;
   leading?: ReactNode;
   title: string;
   sub: string;
+  trailing?: ReactNode;
 }) {
   return (
     <button
       onClick={onClick}
-      className="flex w-full items-center gap-3 border-b border-border px-4 py-3 text-left active:bg-surface2"
+      className="press flex w-full items-center gap-3 border-b border-border px-4 py-3 text-left"
     >
       {leading}
       <span className="min-w-0 flex-1">
         <span className="block text-[14px] font-semibold">{title}</span>
         <span className="mt-0.5 line-clamp-2 block text-xs text-muted">{sub}</span>
       </span>
+      {trailing}
     </button>
   );
 }

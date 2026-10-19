@@ -540,13 +540,16 @@ export async function listPersisted(): Promise<string[]> {
  * as "/bible-kjv.sqlite3", the manifest ids are "kjv". Single source of
  * truth for every "is this translation on the device?" check.
  */
+export function normalizePersistedNames(names: string[]): string[] {
+  return names
+    .map((n) => n.replace(/^\/?bible-/, "").replace(/\.sqlite3$/, ""))
+    .filter((s) => s.length > 0 && s !== "*");
+}
+
 export async function persistedTranslationIds(): Promise<Set<TranslationId>> {
   try {
     const names = await listPersisted();
-    const ids = names
-      .map((n) => n.replace(/^\/?bible-/, "").replace(/\.sqlite3$/, ""))
-      .filter((s) => s.length > 0 && s !== "*");
-    return new Set(ids as TranslationId[]);
+    return new Set(normalizePersistedNames(names) as TranslationId[]);
   } catch {
     return new Set();
   }
@@ -572,8 +575,12 @@ export async function deleteTranslation(id: TranslationId): Promise<void> {
   openPromises.delete(id);
 }
 
-/** Full reset: wipes every persisted corpus from OPFS and rebuilds the worker. */
-export async function resetLibrary(): Promise<{ removed: string[] }> {
+/** Full reset: wipes every persisted corpus from OPFS AND the service
+ * worker's runtime caches, then rebuilds the worker. Clearing the SW caches
+ * matters: `bible-corpora` is cache-first-forever, so a corrupted Cache
+ * Storage entry would otherwise be re-served to the worker's self-heal path
+ * forever — the reset must break that loop. */
+export async function resetLibrary(): Promise<{ removed: string[]; caches: string[] }> {
   let removed: string[] = [];
   try {
     removed = await listPersisted();
@@ -595,10 +602,22 @@ export async function resetLibrary(): Promise<{ removed: string[] }> {
   } catch {
     /* a dead worker is exactly what the reset is for */
   }
+  const clearedCaches: string[] = [];
+  try {
+    const names = await caches?.keys?.();
+    for (const name of names ?? []) {
+      if (/^bible-corpora$|^sqlite-wasm$|^bible-manifest$/.test(name)) {
+        await caches.delete(name);
+        clearedCaches.push(name);
+      }
+    }
+  } catch {
+    /* SW/cache API unavailable (private mode): OPFS wipe still applied */
+  }
   stuckAvoidOpfs = false;
   rebuildWorker();
   openPromises.clear();
-  return { removed };
+  return { removed, caches: clearedCaches };
 }
 
 /* ── Manifest ─────────────────────────────────────────────────────────────── */

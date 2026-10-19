@@ -8,6 +8,8 @@
 export type ThemeName = "light" | "sepia" | "dark";
 export type FontFamilyName = "serif" | "sans";
 
+export type BookNamesLang = "en" | "tl";
+
 export type Settings = {
   theme: ThemeName;
   fontSize: number; // px, 15..30
@@ -15,6 +17,7 @@ export type Settings = {
   fontFamily: FontFamilyName;
   translation: string; // active translation id
   dropCap: boolean; // gold drop-cap on the chapter's first letter
+  bookNames: BookNamesLang; // display language for book names
 };
 
 const KEY = "wb-settings";
@@ -26,6 +29,7 @@ const DEFAULTS: Settings = {
   fontFamily: "serif",
   translation: "kjv",
   dropCap: false,
+  bookNames: "en",
 };
 
 export function loadSettings(): Settings {

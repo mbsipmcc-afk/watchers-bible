@@ -1,4 +1,4 @@
-import { Bookmark, BookmarkCheck, Copy, Eraser, FileText, Share2, X } from "lucide-react";
+import { Bookmark, BookmarkCheck, Copy, Eraser, FileText, Link2, Share2, X } from "lucide-react";
 import type { ReactNode } from "react";
 
 const HL_COLORS = [1, 2, 3, 4, 5] as const;
@@ -15,6 +15,7 @@ export function VerseActionBar({
   onBookmark,
   onNote,
   onCopy,
+  onCopyLink,
   onShare,
   onClearSelection,
 }: {
@@ -25,6 +26,7 @@ export function VerseActionBar({
   onBookmark: () => void;
   onNote: () => void;
   onCopy: () => void;
+  onCopyLink: () => void;
   onShare: () => void;
   onClearSelection: () => void;
 }) {
@@ -70,8 +72,11 @@ export function VerseActionBar({
             <ActionBtn label="Note" onClick={onNote}>
               <FileText size={18} />
             </ActionBtn>
-            <ActionBtn label="Copy" onClick={onCopy}>
+            <ActionBtn label="Copy text" onClick={onCopy}>
               <Copy size={18} />
+            </ActionBtn>
+            <ActionBtn label="Copy link" onClick={onCopyLink}>
+              <Link2 size={18} />
             </ActionBtn>
             <ActionBtn label="Share" onClick={onShare}>
               <Share2 size={18} />

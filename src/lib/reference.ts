@@ -36,6 +36,21 @@ export function bookName(nr: number): string {
   return BOOK_NAMES[nr] ?? `Book ${nr}`;
 }
 
+/**
+ * Display name for a book honoring the book-names setting. Uses the
+ * manifest's per-translation `name_tl` when available, falls back to the
+ * built-in English canon for zero-manifest contexts (e.g. share text).
+ */
+export function bookLabel(
+  nr: number,
+  lang: "en" | "tl",
+  metas?: BookMeta[] | null,
+): string {
+  const meta = metas?.find((b) => b.nr === nr);
+  if (meta) return lang === "tl" ? meta.name_tl || meta.name_en : meta.name_en;
+  return bookName(nr);
+}
+
 export function bookShort(nr: number): string {
   return BOOK_SHORTS[nr] ?? String(nr);
 }
@@ -87,9 +102,9 @@ export function verseOfTheDaySeed(): number {
   return Math.floor(Date.now() / 86_400_000);
 }
 
-/** Contiguous runs of verse numbers, e.g. [3,4,5,7] → [[3,5],[7,7]]. */
+/** Contiguous runs of verse numbers, e.g. [3,4,5,7] → [[3,5],[7,7]]. Dedupes input. */
 export function groupVerses(verses: number[]): [number, number][] {
-  const sorted = [...verses].sort((a, b) => a - b);
+  const sorted = [...new Set(verses)].sort((a, b) => a - b);
   const groups: [number, number][] = [];
   for (const v of sorted) {
     const last = groups[groups.length - 1];
@@ -105,7 +120,7 @@ export function groupVerses(verses: number[]): [number, number][] {
 /**
  * Full share/copy text. `selected` limits the body to tapped verses and
  * groups them into ranges ("Genesis 1:1-3, 5"); without it every passed row
- * is included.
+ * is included. `displayBook` overrides the canonical English book name.
  */
 export function fmtShareText(
   book: number,
@@ -113,6 +128,7 @@ export function fmtShareText(
   translationAbbr: string | undefined,
   rows: { verse: number; text: string }[],
   selected?: number[],
+  displayBook?: string,
 ): string {
   const chosen = selected
     ? rows.filter((r) => selected.includes(r.verse))
@@ -125,5 +141,5 @@ export function fmtShareText(
       : groups.map(([a, b]) => (a === b ? `${chapter}:${a}` : `${chapter}:${a}-${b}`)).join(", ");
   const abbr = translationAbbr ? ` (${translationAbbr})` : "";
   const lines = chosen.map((v) => `${v.verse} ${v.text}`).join("\n");
-  return `${bookName(book)} ${ref}${abbr}\n${lines}\n\nvia Watchers Bible`;
+  return `${displayBook ?? bookName(book)} ${ref}${abbr}\n${lines}\n\nvia Watchers Bible`;
 }

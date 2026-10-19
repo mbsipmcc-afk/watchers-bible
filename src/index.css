@@ -316,6 +316,13 @@ button {
   user-select: none;
 }
 
+/* keyboard focus ring — glassy accent glow, never shown on touch */
+:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
 .safe-top {
   padding-top: env(safe-area-inset-top);
 }

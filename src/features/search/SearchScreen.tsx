@@ -15,6 +15,9 @@ import { EmptyState, IconButton, SkeletonRows, Spinner, TopBar } from "../../com
 
 const PAGE = 60;
 
+// Session-level memory so reopening the Search tab restores the last query.
+let lastQuery = "";
+
 function escapeRe(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -38,7 +41,7 @@ function Marked({ text, terms }: { text: string; terms: string[] }) {
 export default function SearchScreen({ initialQuery = "" }: { initialQuery?: string }) {
   const { settings } = useSettings();
   const manifestState = useManifest();
-  const [q, setQ] = useState(initialQuery);
+  const [q, setQ] = useState(initialQuery || lastQuery);
   const [results, setResults] = useState<VerseRow[] | null>(null);
   const [offset, setOffset] = useState(0);
   const [done, setDone] = useState(false);
@@ -73,6 +76,7 @@ export default function SearchScreen({ initialQuery = "" }: { initialQuery?: str
 
   // debounced search
   useEffect(() => {
+    lastQuery = q;
     const trimmed = q.trim();
     const seq = ++searchSeq.current;
     if (!trimmed) {
@@ -168,7 +172,7 @@ export default function SearchScreen({ initialQuery = "" }: { initialQuery?: str
           <EmptyState text="Type to search." />
         ) : (
           <>
-            <div className="px-4 pb-1 pt-3 text-xs text-muted">
+            <div className="px-4 pb-1 pt-3 text-xs text-muted" role="status" aria-live="polite">
               {opening && !results ? (
                 `Opening ${trMeta?.abbr ?? settings.translation.toUpperCase()} — first open downloads it, then it lives on this device…`
               ) : results ? (

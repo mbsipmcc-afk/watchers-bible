@@ -25,3 +25,29 @@ createRoot(document.getElementById("root")!).render(
     <App />
   </StrictMode>,
 );
+
+// PWA app-shortcut landing: /?go=read | /?go=search → route + clean URL.
+(function handleShortcut() {
+  try {
+    const go = new URLSearchParams(location.search).get("go");
+    if (!go) return;
+    history.replaceState(null, "", location.pathname);
+    if (go === "read") {
+      const stored = localStorage.getItem("wb-lastread");
+      let path = "#/read/kjv/1/1";
+      try {
+        const lr = stored ? JSON.parse(stored) : null;
+        if (lr?.translation && lr?.book && lr?.chapter) {
+          path = `#/read/${lr.translation}/${lr.book}/${lr.chapter}`;
+        }
+      } catch {
+        /* fallback path */
+      }
+      location.hash = path;
+    } else if (go === "search") {
+      location.hash = "#/search";
+    }
+  } catch {
+    /* malformed query: ignore */
+  }
+})();
